@@ -23,6 +23,12 @@ draw over each other.
 
 The main style shows a small red note in the battle if the userscript is missing or is the wrong version.
 
+## Surf
+
+[`vfx/surf/`](vfx/surf) has a hand-made Surf animation as its own Stylus style. Install it like a map. Without it,
+Surf plays the drawn wave built into the userscript (`--surf-custom: 1`). Each saved version of it is tagged (`surf-v1`
+is the first), so an earlier one can always be restored.
+
 ## Tuning
 
 All settings are at the top of the main style, in its SETTINGS block:
