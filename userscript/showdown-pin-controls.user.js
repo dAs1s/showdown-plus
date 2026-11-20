@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Showdown - pin controls to battle window
 // @namespace    showdown-custom
-// @version      2.41.0
+// @version      2.42.0
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.
 // @match        https://play.pokemonshowdown.com/*
 // @run-at       document-idle
@@ -982,6 +982,36 @@
     }
   }
 
+  // ---------- NOTICES FROM THE BUTTONS, SHOWN AT THE TOP ----------
+  // "You are trapped and cannot switch!", "might be trapped / disabled / locked" and the like are written by Showdown
+  // in among the buttons, where the style's single line of buttons squeezed them. The style hides them there; a copy
+  // of their words is shown at the top of the battle, under the VS / Turn sign (class "ps-notice-label"), and the
+  // weather text moves down below it (--ps-notice-h, the copy's height).
+  const NOTICES = 'em.movewarning, .switchmenu > em, .movemenu > p > em, .message-error';
+  function mirrorNotices(battle, ctrl) {
+    let label = battle.querySelector(':scope > .ps-notice-label');
+    if (!label) { label = document.createElement('div'); label.className = 'ps-notice-label'; battle.appendChild(label); }
+    const lines = [];
+    if (ctrl) {
+      ctrl.querySelectorAll(NOTICES).forEach((el) => {
+        if (el.parentElement && el.parentElement.closest(NOTICES)) return;           // (a notice inside another counts once)
+        const copy = el.cloneNode(true);
+        copy.querySelectorAll('button, br').forEach((x) => x.remove());
+        const text = copy.textContent.replace(/\s+/g, ' ').trim();
+        if (text && !lines.includes(text)) lines.push(text);
+      });
+    }
+    const key = lines.join('\n');
+    if (label.dataset.text !== key) {
+      label.dataset.text = key;
+      label.textContent = '';
+      lines.forEach((t, i) => { if (i) label.appendChild(document.createElement('br')); label.appendChild(document.createTextNode(t)); });
+    }
+    const h = lines.length ? label.offsetHeight + 'px' : '0px';
+    put(battle, '--ps-notice-h', h);
+    put(label, 'opacity', lines.length ? '1' : '0');
+  }
+
   // ---------- TRAINER NAMES, CENTERED OVER THEIR TRAINER ----------
   // Names are kept on one line, which stops Showdown from centering them; measure
   // where each trainer actually is on screen and slide the name over it (--name-dx).
@@ -1507,7 +1537,8 @@
       }
       if (st.fxOff && st.shown && st.homeCx !== undefined) at.push({ x: st.homeCx, y: st.homeCy, dx: st.fxOff.dx, dy: st.fxOff.dy });
     });
-    for (let el = fx.firstElementChild; el; el = el.nextElementSibling) {
+    const own = fx.previousElementSibling && fx.previousElementSibling.classList.contains('ps-results') ? Array.from(fx.previousElementSibling.children) : [];
+    for (let el of Array.from(fx.children).concat(own)) {
       let value = '';
       {
         const l = parseFloat(el.style.left), t = parseFloat(el.style.top);
@@ -2676,6 +2707,59 @@
     }
   }
 
+  // ---------- POP-UPS OVER THE POKÉMON LAST LONGER (--result-time) ----------
+  // "-25%", "Burned", "1.5x SpA", an ability's name: Showdown fades them out in about a second. Here they take
+  // --result-time times as long (4 = four times). Showdown empties its effects layer at every step of the battle, which
+  // would cut them short, so they are drawn in a layer of their own beside it; and the battle is held up only as long
+  // as Showdown's own pop-up would have held it, so the game does not slow down.
+  let resultTime = 4;
+  function resultLayer(scene) {
+    const fx = scene.$fx && scene.$fx[0];
+    if (!fx || !fx.parentNode) return null;
+    let layer = fx.previousElementSibling;
+    if (!layer || !layer.classList.contains('ps-results')) {
+      layer = document.createElement('div'); layer.className = 'ps-results';
+      fx.parentNode.insertBefore(layer, fx);
+    }
+    return layer;
+  }
+  function pacer(scene, ms) {          // (an invisible stand-in the battle waits for: as long as the original pop-up)
+    const $p = window.jQuery('<div style="display:none"></div>');
+    scene.$fx.append($p);
+    $p.delay(scene.timeOffset).animate({ opacity: 0 }, ms);
+    return $p;
+  }
+  function patchResults() {
+    const BS = window.BattleScene, $ = window.jQuery;
+    if (!BS || !BS.prototype || !$ || BS.prototype._psResults || typeof BS.prototype.resultAnim !== 'function') return;
+    const origResult = BS.prototype.resultAnim, origAbility = BS.prototype.abilityActivateAnim;
+    BS.prototype.resultAnim = function (pokemon, result, type) {
+      const layer = resultLayer(this), k = Math.max(1, resultTime);
+      if (!this.animating || !layer || k === 1) return origResult.apply(this, arguments);
+      const $effect = $('<div class="result ' + type + 'result"><strong>' + result + '</strong></div>');
+      $(layer).append($effect);
+      $effect.delay(this.timeOffset).css({ display: 'block', opacity: 0, top: pokemon.sprite.top - 5, left: pokemon.sprite.left - 75 }).animate({ opacity: 1 }, 1);
+      $effect.animate({ opacity: 0, top: pokemon.sprite.top - 65 }, 1000 * k, 'swing', () => $effect.remove());
+      this.wait(this.acceleration < 2 ? 350 : 250);
+      pokemon.sprite.updateStatbar(pokemon);
+      if (this.acceleration < 3) this.waitFor(pacer(this, 1000));
+    };
+    if (typeof origAbility === 'function') {
+      BS.prototype.abilityActivateAnim = function (pokemon, result) {
+        const layer = resultLayer(this), k = Math.max(1, resultTime);
+        if (!this.animating || !layer || k === 1) return origAbility.apply(this, arguments);
+        const $effect = $('<div class="result abilityresult"><strong>' + result + '</strong></div>');
+        $(layer).append($effect);
+        $effect.delay(this.timeOffset).css({ display: 'block', opacity: 0, top: pokemon.sprite.top + 15, left: pokemon.sprite.left - 75 }).animate({ opacity: 1 }, 1);
+        $effect.delay(800 * k).animate({ opacity: 0 }, 400 * k, 'swing', () => $effect.remove());
+        this.wait(100);
+        pokemon.sprite.updateStatbar(pokemon);
+        if (this.acceleration < 3) this.waitFor(pacer(this, 1200));
+      };
+    }
+    BS.prototype._psResults = true;
+  }
+
   function everyFrame() {
     safely(() => {
       const now = performance.now();
@@ -2697,6 +2781,7 @@
       if (pointerAt) checkHover();                       // (the Pokémon moved under a still pointer)
       wrapTooltips();
       hookSurf();
+      patchResults();
     });
     requestAnimationFrame(everyFrame);
   }
@@ -2727,6 +2812,7 @@
     sparkCanvas = readNumber('--sun-sparkle-canvas', 1);
     mapNumGen++;
     hoverOn = readNumber('--hover-info', 1);
+    resultTime = Math.min(20, Math.max(1, readNumber('--result-time', 4)));
     safely(markMaximized);
     // (the style removes the log column and moves the chat line when these say so)
     if (document.documentElement.dataset.psLog !== (logShow > 0 ? '1' : '0')) document.documentElement.dataset.psLog = logShow > 0 ? '1' : '0';
@@ -2751,6 +2837,7 @@
       safely(() => pickMap(battle));
       safely(() => markTeamPreview(battle));
       safely(() => mirrorWeatherText(battle));
+      safely(() => mirrorNotices(battle, battle._psCtrl && battle._psCtrl.isConnected ? battle._psCtrl : ((battle.closest('.ps-room') || battle.parentElement || document).querySelector('.battle-controls'))));
       safely(() => fitBattle(battle));
       safely(() => measureVisible(battle));
       safely(() => battle.querySelectorAll('.innerbattle > .ps-bubble').forEach((bubble) => placeBubble(battle, bubble)));
@@ -2769,6 +2856,7 @@
         holder.querySelector(':scope > .battle') ||
         room.querySelector('.battle');
       if (!battle) return;
+      battle._psCtrl = ctrl;
 
       watch(battle);
       watch(room);

@@ -10,7 +10,7 @@ you can turn moves on and off one at a time. A move without its style on plays a
 
 ## Install
 
-1. The pin-controls userscript, **2.41.0 or later** ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
+1. The pin-controls userscript, **2.41.0 or later** (2.42.0 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
    2.41.0 is the first version that plays Hydro Pump; Surf works from 2.40.
 2. Open each move's `.user.css` above, click *Raw*, and Stylus opens its install page.
 

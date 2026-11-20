@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           Showdown - battle style (main)
 @namespace      dasmins.showdown
-@version        1.0.0
+@version        1.1.0
 @description    Battle layout, sprites, HP bars, buttons and the settings for the animated map rotation. Needs the pin-controls userscript.
 @author         dasmins
 ==/UserStyle== */
@@ -215,6 +215,9 @@
   /* weather and field text, e.g. "Rain (4 turns)" (it sits under the sign) */
   --weather-below: 40px;              /* how far below the top line it starts */
   --weather-scale: 0.8;               /* size */
+  /* notices from the buttons ("You are trapped and cannot switch!", "might be trapped"...): shown here, under the VS / Turn
+     sign, with the weather text moved down below them (needs userscript 2.42 or later) */
+  --notice-scale: 0.8;                /* size */
 
   /* ===== 9 HP BARS ===== */
   /* one thin bar per side, from near the edge of the window toward the sign; both fill from the edge side. */
@@ -286,6 +289,7 @@
   --result-size: 13px;                /* text size */
   --result-outline: 1;                /* thin outline round the letters so they read on any background (0 = none, 1 = solid) */
   --result-outline-color: 255, 255, 255;/* its colour (red, green, blue): 255, 255, 255 = white, 0, 0, 0 = black */
+  --result-time: 4;                   /* how long they take to fade away, in times Showdown's own (1 = as Showdown, 4 = four times as long; the battle does not wait for them; needs userscript 2.42 or later) */
   /* talk bubbles: what the two players say in the battle's chat, shown beside their trainers */
   --bubble-show: 1;                   /* 1 = on, 0 = off */
   --bubble-time: 6s;                  /* how long a bubble stays */
@@ -901,7 +905,7 @@ html body .battle .weather > em {
 html body .battle .ps-weather-label {
   position: absolute !important;
   left: 50% !important;
-  top: calc(var(--top-line) + var(--weather-below)) !important;   /* (this text is placed from the top of the screen itself, so no --top-rise here) */
+  top: calc(var(--top-line) + var(--weather-below) + var(--ps-notice-h, 0px) * var(--notice-scale)) !important;   /* (this text is placed from the top of the screen itself, so no --top-rise here; below any notice) */
   translate: -50% 0 !important;
   scale: var(--weather-scale) !important;          /* (shrinks toward its top edge) */
   transform-origin: 50% 0 !important;
@@ -913,6 +917,52 @@ html body .battle .ps-weather-label {
   z-index: 5 !important;
   pointer-events: none !important;
   transition: opacity 0.3s;
+}
+
+/* ...and the notices from the buttons ("You are trapped and cannot switch!"): a copy from the userscript, right under the
+   VS / Turn sign (the weather text moves down below it) */
+html body .battle .ps-notice-label {
+  position: absolute !important;
+  left: 50% !important;
+  top: calc(var(--top-line) + var(--weather-below)) !important;
+  translate: -50% 0 !important;
+  scale: var(--notice-scale) !important;
+  transform-origin: 50% 0 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  line-height: 1.3 !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: var(--ui-font), monospace !important;
+  font-weight: var(--ui-font-weight) !important;
+  -webkit-font-smoothing: none !important;
+  text-shadow:
+     1px  0   0 rgba(0, 0, 0, var(--ui-text-outline)),
+    -1px  0   0 rgba(0, 0, 0, var(--ui-text-outline)),
+     0    1px 0 rgba(0, 0, 0, var(--ui-text-outline)),
+     0   -1px 0 rgba(0, 0, 0, var(--ui-text-outline)) !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s;
+}
+/* the originals among the buttons: gone (where one holds a button, only its words go), so the line of buttons keeps its room */
+html body .battle-controls em.movewarning:not(:has(button)),
+html body .battle-controls .switchmenu > em:not(:has(button)),
+html body .battle-controls .movemenu > p:not(:has(button)),
+html body .battle-controls .message-error:not(:has(button)) {
+  display: none !important;
+}
+html body .battle-controls .movemenu > p:has(button) {
+  display: contents !important;
+}
+html body .battle-controls em.movewarning:has(button),
+html body .battle-controls .movemenu > p > em:has(button) {
+  display: contents !important;
+  font-size: 0 !important;
+}
+html body .battle-controls em.movewarning:has(button) button,
+html body .battle-controls .movemenu > p > em:has(button) button {
+  font-size: calc(var(--bw, 640px) * var(--ctrl-font) * var(--ui-font-scale)) !important;
 }
 
 /* ---------- BACKGROUND (pixelation, darks and lights come from the userscript) ---------- */
@@ -1484,6 +1534,30 @@ html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log-add {
   box-sizing: border-box !important;
   z-index: 6 !important;
 }
+/* (everything inside the chat line stays inside it: its box and its typing area take its width, never more, so it
+   cannot reach over the maximize button beside it) */
+html[data-ps-log="0"] body .ps-room .battle-log-add,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log-add {
+  overflow: hidden !important;
+}
+html[data-ps-log="0"] body .ps-room .battle-log-add form,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log-add form {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+html[data-ps-log="0"] body .ps-room .battle-log-add textarea,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log-add textarea {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
 html[data-ps-log="0"][data-ps-chat-line="0"] body .ps-room .battle-log-add,
 html[data-ps-max="1"][data-ps-chat-line="0"] body .ps-room[data-ps-maxroom] .battle-log-add {
   display: none !important;
@@ -1499,7 +1573,7 @@ html body .ps-room > .ps-max-button {
   margin: 0 !important;
   padding: 3px !important;
   box-sizing: border-box !important;
-  z-index: 6 !important;
+  z-index: 7 !important;                     /* (over the chat line, should anything of it reach) */
   display: block !important;
   color: #ffffff !important;
   background: rgba(16, 28, 82, 0.8) !important;
