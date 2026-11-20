@@ -1,0 +1,70 @@
+{
+  "previewStage": {
+    "width": 640,
+    "height": 410
+  },
+  "spriteFrame": {
+    "width": 320,
+    "height": 205
+  },
+  "displayScale": 2,
+  "previewBattlerFeet": {
+    "near": {
+      "x": 226,
+      "y": 358
+    },
+    "far": {
+      "x": 370,
+      "y": 216
+    }
+  },
+  "sampling": "nearest",
+  "anchor": {
+    "x": 0,
+    "y": 0,
+    "description": "Top-left of stage"
+  },
+  "framesPerSecond": 20,
+  "frameCount": 60,
+  "frameDurationMs": 50,
+  "durationMs": 3000,
+  "loop": false,
+  "atlas": {
+    "columns": 8,
+    "rows": 8,
+    "order": "Row-major, indexed from zero"
+  },
+  "beatsMs": {
+    "surgeBreaksSurface": 30,
+    "surgePeaks": 160,
+    "surgeSettles": 860,
+    "waveRises": 75,
+    "waveAdvances": 125,
+    "lipCurls": 680,
+    "crestPlunges": 1650,
+    "targetImpact": 1690,
+    "crestPassesTarget": 1900,
+    "washSpreads": 1740,
+    "washSlows": 1950,
+    "waterClears": 2810,
+    "surgeWashClears": 1110
+  },
+  "compositingOrder": [
+    "stage",
+    "behind",
+    "far battler",
+    "between",
+    "near battler",
+    "front"
+  ],
+  "playerAttack": {
+    "behind": "surf-outgoing-behind.png",
+    "between": "surf-outgoing-between.png",
+    "front": "surf-outgoing-front.png"
+  },
+  "opponentAttack": {
+    "behind": "surf-incoming-behind.png",
+    "between": "surf-incoming-between.png",
+    "front": "surf-incoming-front.png"
+  }
+}

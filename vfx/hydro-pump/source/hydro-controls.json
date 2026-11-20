@@ -1,0 +1,17 @@
+{
+  "framesPerSecond": 20,
+  "endSeconds": 2.9,
+  "streamStartSeconds": 0.6,
+  "travelSeconds": 0.3,
+  "emitEndSeconds": 1.6,
+  "streamRadiusFraction": 0.31,
+  "impactRadiusFraction": 0.86,
+  "impactSheetLifetimeSeconds": 0.46,
+  "poolClearSeconds": 2.58,
+  "streamBodyOpacity": 0.64,
+  "flowSpeed": 13.0,
+  "foamRingSpacing": 0.14,
+  "foamRingThickness": 0.15,
+  "sourceFoamRadiusMultiplier": 1.02,
+  "chargeStartSeconds": 0.05
+}

@@ -23,11 +23,10 @@ draw over each other.
 
 The main style shows a small red note in the battle if the userscript is missing or is the wrong version.
 
-## Surf
+## VFX mod: Surf and Hydro Pump
 
-[`vfx/surf/`](vfx/surf) has a hand-made Surf animation as its own Stylus style. Install it like a map. Without it,
-Surf plays the drawn wave built into the userscript (`--surf-custom: 1`). Each saved version of it is tagged (`surf-v1`
-is the first), so an earlier one can always be restored.
+[`vfx/`](vfx) has hand-made move animations, each its own Stylus style: Surf and Hydro Pump. They need the userscript
+2.41.0 or later. See [`vfx/README.md`](vfx/README.md) to install them, change them, and restore earlier versions.
 
 ## Tuning
 

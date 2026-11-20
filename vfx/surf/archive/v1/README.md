@@ -5,7 +5,7 @@ wave built into the userscript.
 
 ## Install
 
-Open [`showdown-surf-sheets.user.css`](showdown-surf-sheets.user.css), click *Raw*, and Stylus opens its install
+Open [`showdown-surf-sheets.user.css`](showdown-surf-sheets.user.css) (in this folder), click *Raw*, and Stylus opens its install
 page. It needs the pin-controls userscript, and `--surf-sheets: 1` in the main style (the default).
 
 ## What is in it
@@ -25,3 +25,4 @@ This version is tagged `surf-v1`. To restore it after changing things:
 
 - On GitHub: switch the branch menu to the `surf-v1` tag, open the file and download it.
 - With git: `git checkout surf-v1 -- vfx/surf`
+- Or install the copy in this folder: it is that same version, kept here as an archive.

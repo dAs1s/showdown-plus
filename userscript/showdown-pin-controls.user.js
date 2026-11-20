@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Showdown - pin controls to battle window
 // @namespace    showdown-custom
-// @version      2.40.0
+// @version      2.41.0
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.
 // @match        https://play.pokemonshowdown.com/*
 // @run-at       document-idle
@@ -2555,7 +2555,7 @@
   // were drawn for a window with the Pokémon standing at set spots; the frames are scaled and moved (never rotated)
   // so those spots land where the two Pokémon really stand (--surf-sheet-fit: 0 draws them exactly as rendered).
   const sheetImgs = new Map();
-  let sheetCache = null;
+  const sheetCaches = {};            // move prefix ('surf', 'hydro-pump') -> its sheets, once read
   function sheetImage(url) {
     let e = sheetImgs.get(url);
     if (!e) {
@@ -2565,28 +2565,34 @@
     }
     return e;
   }
-  function readSheets() {
-    if (readNumber('--surf-sheets', 1) <= 0) return null;
+  // A move's sheets come from its VFX style: --<prefix>-sheet-info and the six --<prefix>-sheet-<way>-<layer> pictures;
+  // --<prefix>-sheets: 0 in the main style switches them off (Surf: --surf-sheets, Hydro Pump: --hydro-pump-sheets)
+  function readSheets(prefix) {
+    prefix = prefix || 'surf';
+    if (readNumber('--' + prefix + '-sheets', 1) <= 0) return null;
     const cs = getComputedStyle(document.documentElement);
-    const raw = cs.getPropertyValue('--surf-sheet-info').trim();
+    const raw = cs.getPropertyValue('--' + prefix + '-sheet-info').trim();
     if (!raw) return null;
-    const key = raw + '|' + cs.getPropertyValue('--surf-sheet-out-behind').length;
+    const key = raw + '|' + cs.getPropertyValue('--' + prefix + '-sheet-out-behind').length;
+    const sheetCache = sheetCaches[prefix];
     if (sheetCache && sheetCache.key === key) return sheetCache;
     const info = raw.replace(/^["']|["']$/g, '').split(/\s+/).map(Number);
     if (info.length < 12 || info.some((n) => !Number.isFinite(n))) return null;
     const set = {};
     for (const way of ['out', 'in']) for (const layer of ['behind', 'between', 'front']) {
-      const m = /url\(\s*(['"]?)([\s\S]*?)\1\s*\)/.exec(cs.getPropertyValue('--surf-sheet-' + way + '-' + layer));
+      const m = /url\(\s*(['"]?)([\s\S]*?)\1\s*\)/.exec(cs.getPropertyValue('--' + prefix + '-sheet-' + way + '-' + layer));
       if (!m) return null;
       set[way + '-' + layer] = sheetImage(m[2]);
     }
     const [frames, fps, cols, fw, fh, nx, ny, fx, fy, impact, stageW, stageH] = info;
-    sheetCache = { key: key, frames: frames, fps: fps, cols: cols, fw: fw, fh: fh, near: [nx, ny], far: [fx, fy], impact: impact, stageW: stageW, stageH: stageH, set: set };
-    return sheetCache;
+    return (sheetCaches[prefix] = { key: key, frames: frames, fps: fps, cols: cols, fw: fw, fh: fh, near: [nx, ny], far: [fx, fy], impact: impact, stageW: stageW, stageH: stageH, set: set });
   }
-  function sheetSurf(scene, sprites) {
-    const sh = readSheets();
+  // plays a move's sheets (Surf, Hydro Pump); false when that move has none, or they are not loaded yet
+  function sheetSurf(scene, sprites) { return sheetMove(scene, sprites, 'surf'); }
+  function sheetMove(scene, sprites, prefix) {
+    const sh = readSheets(prefix);
     if (!sh) return false;
+    const opt = (name, fallback) => readNumber('--' + prefix + '-' + name, fallback);      // (each move its own: --surf-speed, --hydro-pump-speed...)
     const attacker = sprites[0], target = sprites.slice(1).filter(Boolean)[0];
     const el = (s) => s && s.$el && s.$el[0];
     const farBox = scene.$sprites && scene.$sprites[1] && scene.$sprites[1][0], nearBox = scene.$sprites && scene.$sprites[0] && scene.$sprites[0][0];
@@ -2597,7 +2603,7 @@
     const inner = el(attacker).closest('.innerbattle');
     if (!inner) return false;
     const acc = scene.acceleration || 1;
-    const speed = Math.max(0.2, readNumber('--surf-speed', 1)) * acc;
+    const speed = Math.max(0.2, opt('speed', 1)) * acc;
     // the target shakes as the wave hits it (Showdown waits for this before going on)
     sprites.slice(1).filter(Boolean).forEach((d) => {
       d.delay(sh.impact / speed);
@@ -2607,17 +2613,17 @@
     const ox = (inner.offsetWidth - sh.stageW) / 2, oy = inner.offsetHeight - sh.stageH;
     let s = 1, tx = ox, ty = oy;
     const nearStand = standOf(way === 'out' ? attacker : target, inner), farStand = standOf(way === 'out' ? target : attacker, inner);
-    if (readNumber('--surf-sheet-fit', 1) > 0 && nearStand && farStand) {
+    if (opt('sheet-fit', 1) > 0 && nearStand && farStand) {
       const dp = [sh.far[0] - sh.near[0], sh.far[1] - sh.near[1]], da = [farStand.x - nearStand.x, farStand.y - nearStand.y];
       const len = dp[0] * dp[0] + dp[1] * dp[1];
       if (len > 1) s = Math.min(1.4, Math.max(0.7, (dp[0] * da[0] + dp[1] * da[1]) / len));
       tx = (nearStand.x + farStand.x) / 2 - s * (sh.near[0] + sh.far[0]) / 2;
       ty = (nearStand.y + farStand.y) / 2 - s * (sh.near[1] + sh.far[1]) / 2;
     }
-    s *= Math.max(0.2, readNumber('--surf-sheet-scale', 1));
-    tx += readNumber('--surf-sheet-x', 0); ty += readNumber('--surf-sheet-y', 0);
+    s *= Math.max(0.2, opt('sheet-scale', 1));
+    tx += opt('sheet-x', 0); ty += opt('sheet-y', 0);
     const host = farBox.parentNode;
-    host.querySelectorAll(':scope > canvas.ps-surf-sheet').forEach((c) => c.remove());
+    host.querySelectorAll(':scope > canvas.ps-surf-sheet').forEach((c) => c.remove());     // (one sheet move at a time)
     const cvs = L.map((e, i) => {
       const c = document.createElement('canvas');
       c.className = 'ps-surf-sheet ps-surf-' + ['behind', 'between', 'front'][i];
@@ -2647,16 +2653,27 @@
     return true;
   }
 
-  let surfRun = 0, surfOriginal = null, sheetTry = -1e9;
+  let surfRun = 0, surfOriginal = null, sheetTry = -1e9, hydroOriginal = null;
+  const sheetReady = (p) => !!(sheetCaches[p] && Object.values(sheetCaches[p].set).every((e) => e.ok));
+  // Hydro Pump: its sheets when its VFX style is on (and loaded); Showdown's own otherwise
+  function hydroAnim(scene, sprites) {
+    try { if (sheetMove(scene, sprites, 'hydro-pump')) return; } catch (e) { /* (Showdown's own instead) */ }
+    return hydroOriginal.apply(this, arguments);
+  }
   function hookSurf() {
     const M = window.BattleMoveAnims;
     if (!M || !M.surf) return;
     const now = performance.now();                 // (looks for the sheets every 2 s until they are loaded)
-    if (now - sheetTry > 2000 && !(sheetCache && Object.values(sheetCache.set).every((e) => e.ok))) { sheetTry = now; safely(readSheets); }
+    if (now - sheetTry > 2000 && !(sheetReady('surf') && sheetReady('hydro-pump'))) { sheetTry = now; safely(() => readSheets('surf')); safely(() => readSheets('hydro-pump')); }
     if (!surfOriginal) surfOriginal = M.surf.anim;
     const want = readNumber('--surf-custom', 1) > 0;
     const anim = want ? surfAnim : surfOriginal;
     if (M.surf.anim !== anim) M.surf.anim = anim;
+    if (M.hydropump) {
+      if (!hydroOriginal) hydroOriginal = M.hydropump.anim;
+      const hy = readSheets('hydro-pump') ? hydroAnim : hydroOriginal;
+      if (M.hydropump.anim !== hy) M.hydropump.anim = hy;
+    }
   }
 
   function everyFrame() {

@@ -1,0 +1,52 @@
+{
+  "spriteFrame": {
+    "width": 320,
+    "height": 205
+  },
+  "previewStage": {
+    "width": 640,
+    "height": 410
+  },
+  "displayScale": 2,
+  "sampling": "nearest",
+  "framesPerSecond": 20,
+  "frameDurationMs": 50,
+  "frameCount": 59,
+  "durationMs": 2950,
+  "loop": false,
+  "atlas": {
+    "columns": 8,
+    "rows": 8,
+    "order": "row-major"
+  },
+  "anchor": {
+    "x": 0,
+    "y": 0
+  },
+  "beatsMs": {
+    "chargeStarts": 50,
+    "streamStarts": 600,
+    "targetImpact": 900,
+    "emissionEnds": 1600,
+    "lastWaterHits": 1900,
+    "groundWaterClears": 2580
+  },
+  "compositingOrder": [
+    "stage",
+    "behind",
+    "far battler",
+    "between",
+    "near battler",
+    "front"
+  ],
+  "playerAttack": {
+    "behind": "hydro-pump-outgoing-behind.png",
+    "between": "hydro-pump-outgoing-between.png",
+    "front": "hydro-pump-outgoing-front.png"
+  },
+  "opponentAttack": {
+    "behind": "hydro-pump-incoming-behind.png",
+    "between": "hydro-pump-incoming-between.png",
+    "front": "hydro-pump-incoming-front.png"
+  }
+}

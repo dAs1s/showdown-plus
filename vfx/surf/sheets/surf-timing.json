@@ -1,0 +1,91 @@
+{
+  "previewStage": {
+    "width": 640,
+    "height": 410
+  },
+  "spriteFrame": {
+    "width": 320,
+    "height": 205
+  },
+  "displayScale": 2,
+  "previewBattlerFeet": {
+    "near": {
+      "x": 226,
+      "y": 358
+    },
+    "far": {
+      "x": 370,
+      "y": 216
+    }
+  },
+  "sampling": "nearest",
+  "anchor": {
+    "x": 0,
+    "y": 0,
+    "description": "Top-left of stage"
+  },
+  "framesPerSecond": 20,
+  "frameCount": 72,
+  "frameDurationMs": 50,
+  "durationMs": 3600,
+  "loop": false,
+  "atlas": {
+    "columns": 8,
+    "rows": 9,
+    "order": "Row-major, indexed from zero"
+  },
+  "beatsMs": {
+    "surgeBreaksSurface": 0,
+    "surgePeaks": 255,
+    "surgeSettles": 1035,
+    "waveRises": 101,
+    "waveAdvances": 172,
+    "lipCurls": 476,
+    "crestPlunges": 1176,
+    "targetImpact": 1300,
+    "crestPassesTarget": 1510,
+    "waterClears": 2650,
+    "surgeWashClears": 1285,
+    "crestClears": 2650,
+    "surgeHangEnds": 255,
+    "dampGroundClears": 3550,
+    "trailRecedeStarts": 100,
+    "trailFarBankRecedes": 1850
+  },
+  "compositingOrder": [
+    "stage",
+    "behind",
+    "far battler",
+    "between",
+    "near battler",
+    "front"
+  ],
+  "playerAttack": {
+    "behind": "surf-outgoing-behind.png",
+    "between": "surf-outgoing-between.png",
+    "front": "surf-outgoing-front.png"
+  },
+  "opponentAttack": {
+    "behind": "surf-incoming-behind.png",
+    "between": "surf-incoming-between.png",
+    "front": "surf-incoming-front.png"
+  },
+  "baseVersion": "surf-behind-caster",
+  "puddleVersion": "surf-closer-receding-trail",
+  "surgeAndWaveTimingPreserved": true,
+  "postImpactWidthGrowth": 0.18,
+  "postImpactPerspectiveWidthCompensated": true,
+  "trailPostImpactStartsAtFullWidth": false,
+  "trailPostImpactStartsNarrow": true,
+  "waveBaseContactFullWidth": true,
+  "waterTrailEnabled": true,
+  "dissipationPuddleEnabled": false,
+  "openingSurgeEnabled": true,
+  "dampGroundOpacity": 0.31,
+  "trailStartCutMs": 400,
+  "trailAppearanceDelayMs": 0,
+  "puddleFoamEdgeOnly": true,
+  "waveContactTealFill": true,
+  "trailRowFadeMs": 800,
+  "trailReleasedStartWidthFraction": 0.43
+}
