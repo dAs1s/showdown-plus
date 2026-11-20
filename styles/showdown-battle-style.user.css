@@ -1,0 +1,1699 @@
+/* ==UserStyle==
+@name           Showdown - battle style (main)
+@namespace      dasmins.showdown
+@version        1.0.0
+@description    Battle layout, sprites, HP bars, buttons and the settings for the animated map rotation. Needs the pin-controls userscript.
+@author         dasmins
+==/UserStyle== */
+@-moz-document domain("play.pokemonshowdown.com") {
+
+:root {
+  /* ========================================================================== */
+  /* SETTINGS: change a number, save, and the battle updates. */
+
+  /*  1 BACKGROUND            5 SHADOWS AND FOOTING     9 HP BARS */
+  /*  2 YOUR POKÉMON          6 TEAM PREVIEW           10 BUTTONS */
+  /*  3 OPPONENT'S POKÉMON    7 WEATHER                11 TEXT AND UI PIXELS */
+  /*  4 TRAINERS              8 TOP LINE               12 BATTLE LOG */
+  /* 13 ROOM AND TALK BUBBLES */
+
+  /* The same words mean the same thing everywhere: */
+  /*   -x  across: bigger = further right        -y  down: bigger = lower */
+  /*   scale / zoom    1 = normal size */
+  /*   contrast, brightness, saturate    1 = unchanged (saturate 0 = grey) */
+  /*   show / opacity  1 = solid, 0 = hidden, between = see-through */
+  /* ========================================================================== */
+
+  /* ===== 1 BACKGROUND ===== */
+  /* look: works on every background, the animated ones included */
+  --bg-brightness: 1.15;              /* overall brightness (below 1 = darker) */
+  --bg-contrast: 1.2;                /* contrast */
+  --bg-saturate: 0.8;                 /* colour strength */
+  --bg-darks: 1;                      /* shadows: above 1 = deeper (1.5 = noticeable, 2 = moody), below 1 = lifted */
+  --bg-mids: 1;                       /* mid-tones only: above 1 = brighter (1.2 = a little, 1.5 = clearly), below 1 = darker */
+  --bg-lights: 1;                     /* highlights, REVERSED: below 1 = brighter (0.8 = brighter, 0.6 = glowing), above 1 = dimmer */
+  --bg-cel: 1;                        /* cel shading, on animated backgrounds that carry it: 0 = as painted, 1 = fully cel-shaded, between = a blend */
+  /* placement: works on every background */
+  --bg-zoom: 1.1;                     /* zoom in (1.1 = 10% closer). Pixel-art backgrounds keep even pixels only at 1, 1.5 and 2 */
+  --bg-x: 0px;                        /* move the picture across */
+  --bg-y: -5px;                       /* move the picture down */
+  /* maps: up to 20 animated backgrounds can be installed, each in its own slot; every battle gets one of them at random */
+  --map-pick: 0;                      /* 0 = random; 1 to 20 = always the map in that slot (handy while tuning one) */
+  /* only on Showdown's own backgrounds: an animated background's style switches these off */
+  /* (its fog and dark edges come back if --cbg-haze is raised in that background's own style) */
+  --bg-opacity: 1.0;                  /* how solid the picture is */
+  --bg-hue: 0deg;                     /* colour shift (0deg = none, e.g. 20deg or -20deg) */
+  --bg-sepia: 0;                      /* old-photo tint (0 = none, 1 = full) */
+  --bg-blur: 0px;                     /* softening (0px = sharp) */
+  --bg-pixel: 1;                      /* pixel block size (2 = finest, 4 = retro, 6+ = chunky; whole numbers) */
+  --bg-pixel-strength: 3;             /* how blocky (0 = smooth, 1 = full blocks) */
+  --bg-vignette: 0.0;                 /* dark edges (0 = none, 0.5 = moody, 0.8 = heavy) */
+  --bg-vignette-size: 0px;            /* how far the dark edges reach in */
+  --haze-top: 0;                      /* fog at the top of the picture (0 = none, 0.3 = light, 0.6 = heavy) */
+  --haze-color: 210, 220, 232;        /* fog colour as R, G, B */
+  --haze-start: 100%;                 /* height where the fog starts, measured from the bottom */
+  --haze-end: 100%;                   /* height where the fog reaches full thickness */
+
+  /* ===== 2 YOUR POKÉMON (back turned) ===== */
+  --player-scale: 1.9;                /* size (it grows up from its feet) */
+  --player-x: 100px;                  /* move across */
+  --player-y: 75px;                   /* move down */
+  --player-contrast: .9;              /* contrast */
+  --player-saturate: .9;              /* colour strength */
+  --player-brightness: 1;             /* brightness */
+  --player-lines: 1;                  /* thickness of the black border round it: 1 = as drawn (nothing is done to it), 0.7 = one screen pixel thinner, 0.5 = two thinner. Only the outer border changes and it stays black */
+
+  /* ===== 3 OPPONENT'S POKÉMON ===== */
+  --foe-scale: 1.3;                   /* size (it grows around its feet) */
+  --foe-x: 30px;                      /* move across */
+  --foe-y: 50px;                      /* move down */
+  --foe-contrast: 0.9;                /* contrast (below 1 = flatter, like distance haze) */
+  --foe-saturate: 0.9;                /* colour strength */
+  --foe-brightness: 1.0;              /* brightness */
+
+  /* ===== 4 TRAINERS (standing in the battle) ===== */
+  /* x and y are measured on the battle window as you see it at 640 x 410: */
+  /* x = from its left edge to the trainer's middle, y = from its top edge down to the feet */
+  --trainer-show: 1;                  /* both trainers at once (0.8 = Showdown's own see-through look) */
+  /* you: drawn in front of the Pokémon */
+  --player-trainer-x: 135px;          /* across */
+  --player-trainer-y: 470px;          /* down to the feet */
+  --player-trainer-scale: 3.40;       /* size (1 = Showdown's 80 px picture; it grows up from the feet) */
+  --player-trainer-saturate: 1;       /* colour strength */
+  --player-trainer-contrast: 1.1;       /* contrast */
+  --player-trainer-brightness: 1;     /* brightness */
+  --player-trainer-lines: 1;          /* thickness of the black border round your trainer, the same way (1 = as drawn) */
+  /* opponent: drawn behind the Pokémon */
+  --foe-trainer-x: 510px;             /* across */
+  --foe-trainer-y: 240px;             /* down to the feet */
+  --foe-trainer-scale: 1.10;          /* size */
+  --foe-trainer-saturate: .77;        /* colour strength */
+  --foe-trainer-contrast: 1.12;        /* contrast */
+  --foe-trainer-brightness: 0.95;        /* brightness */
+
+  /* ===== 5 SHADOWS AND FOOTING ===== */
+  /* cast shadows: each Pokémon's and trainer's own outline laid on the ground (needs userscript 2.7 or later) */
+  --cast-show: 1;                     /* 1 = on, 0 = off, between = fainter */
+  --cast-min-width: 0.5;              /* a shadow never gets thinner than this much of its owner's width, however flat the angle (0.5 = half; 0 = no limit: at flat angles it thins to a line) */
+  /* a Pokémon in the air (a jump, the hop when it is sent out): its shadow stays on the ground, and the higher it is,
+     the fainter and softer the shadow gets */
+  --cast-air-height: 100px;           /* the height at which the shadow is at its faintest and softest (below that it changes evenly; above, no further) */
+  --cast-air-strength: 0.3;           /* how much of the shadow is left at that height (1 = no fading, 0 = gone) */
+  --cast-air-blur: 6px;               /* how much softer its edge is at that height, added to the map's own blur (0px = no change) */
+  /* MAP 1 (the tower): its shadows. THESE are the numbers to change for the tower.
+     angle = where a shadow falls on screen: 0deg = to the right, 90deg = straight down (toward you), 180deg = to the left,
+     270deg = straight up (away). Each of the four has its own: the ones standing higher on the screen (further away) lie
+     flatter, so they get the smaller numbers */
+  --map1-shadow-angle-foe-trainer: 8deg;/* the opponent's trainer (highest on the screen) */
+  --map1-shadow-angle-foe: 15deg;     /* the opponent's Pokémon */
+  --map1-shadow-angle-player: 47deg;  /* your Pokémon */
+  --map1-shadow-angle-player-trainer: 70deg;/* your trainer (lowest on the screen) */
+  --map1-shadow-length: 1.1;          /* how long (1 = as long as the Pokémon is tall) */
+  --map1-shadow-strength: 0.5;        /* darkness (0 = none, 1 = black) */
+  --map1-shadow-blur: 1.5px;          /* softness of the edge */
+  /* a map in another slot gets its own the same way: --map2-shadow-angle-foe-trainer, --map2-shadow-angle-foe,
+     --map2-shadow-angle-player, --map2-shadow-angle-player-trainer, --map2-shadow-length, ... up to --map20-...
+     Length, strength and blur for any map without its own, and for Showdown's own backgrounds (angles are per map only): */
+  --map-shadow-length: 1;             /* how long */
+  --map-shadow-strength: 0.4;         /* darkness */
+  --map-shadow-blur: 1.5px;           /* softness of the edge */
+  /* sun sparkles: a gleaming edge of little gold stars along the very outer edge of each Pokémon's and trainer's border, on the part the map's sun reaches (light is cast from the sun as straight rays: the far side and anything in the unit's own shade get none). The edge gleams gold along most of its length; its brightest spots open into four-pointed stars, and the gleam flows, so every star comes up and dies away gradually. About a quarter of the sparkles are slightly orange. It is drawn on the sprite's own edge, in whatever frame of its animation is showing, so it moves with it, and it is sized in whole screen dots, so it stays crisp when the page is zoomed or the screen is high-density (needs userscript 2.31 or later) */
+  --sun-rim: 0;                       /* 0 = no sparkles (removed: the filters below no longer call them), 1 = full strength, between = fainter */
+  --sun-sparkle-canvas: 1;            /* 1 = the sparkles are painted on small canvases laid over the characters (fast); 0 = the old way, a filter on each character (slow: see below) */
+  --sun-rim-player: 0.85;             /* how strong the sparkles are on your Pokémon and trainer, as a share of --sun-rim (0.85 = 15% fainter, 1 = full) */
+  --sun-rim-foe: 0.7;                 /* how strong they are on the opponent's Pokémon and trainer (0.7 = 30% fainter, 1 = full) */
+  --sun-sparkles-player: 48;          /* how many stars on YOUR units: stars open at a moment per 100 px of lit edge (0 = none). Only so many fit before they run together: about 14 to 18 at this star size (more with smaller stars); a bigger number than fits gives the most that fit */
+  --sun-sparkles-foe: 24;             /* the same, on the OPPONENT's units */
+  --sun-sparkle-size-player: 1.5px;   /* how big a sparkle is on your units, and how thick the gleaming edge is, in battle px. Drawn as pixel blocks it comes out a whole, odd number of screen dots (3, 5, 7...), whichever is nearest */
+  --sun-sparkle-size-foe: 1.5px;      /* the same, on the opponent's units */
+  --sun-sparkle-points-player: 0.3;   /* how far a star's points reach from its middle on your units, in star sizes: 0 = none (a plain square pixel), 0.3 = small nubs, 1 = short points (a fat star), 2 = long points */
+  --sun-sparkle-points-foe: 0.3;      /* the same, on the opponent's units */
+  --sun-sparkle-pixel: 1;             /* 1 = sparkles are drawn as pixel art: flat square blocks, all on one grid that starts on a whole screen dot; 0 = soft dots */
+  --sun-sparkle-low-gold: 0.35;       /* how bright a GOLD sparkle stays at the dimmest point of its cycle: 0 = it goes out completely (the black border shows), 0.35 = it dims to a soft gold, 1 = it never dims */
+  --sun-sparkle-low-green: 0.2;       /* the same for the GREEN sparkles (while the serpent is out) */
+  --sun-sparkle-saturate-gold: 0.95;  /* colour strength of the gold (and slightly orange) sparkles: 1 = as designed, 0.95 = 5% less, 0 = grey */
+  --sun-sparkle-saturate-green: 0.8075;/* colour strength of the green sparkles: 0.85, then 5% less */
+  --sun-sparkle-bright-gold: 0.85;    /* brightness of the gold sparkles' colours: 1 = as designed. (0.85: with the dimmest point lifted to 0.35, this leaves the lit edge 5% less bright overall than it was) */
+  --sun-sparkle-bright-green: 0.915;  /* brightness of the green sparkles' colours (0.915: the light they add on screen measures 10% less than it did) */
+  --sun-sparkle-strength: 1.15;       /* an extra push on the sparkles' strength (1 = none, 1.15 = 15% brighter; a sparkle cannot be stronger than fully solid) */
+  /* keeping the game smooth: each sparkle step makes the browser draw that unit's whole sparkle filter again, by far
+     the most expensive thing in this style */
+  --sun-sparkle-steps: 6.6;           /* how many steps a second each unit's sparkles take (6.6 = as before; lower = slower twinkle, less work) */
+  --sun-sparkle-rest: 1;              /* 1 = the sparkles hold still while a Pokémon is moving or an effect is on screen; 0 = they keep twinkling through moves */
+  --sun-sparkle-auto: 1;              /* 1 = watch the frame rate and space the steps further apart (up to 40 times) while it is under the next line; 0 = never */
+  --sun-sparkle-min-fps: 50;          /* the frame rate to hold (on a 120 or 144 Hz screen you may want more) */
+  --surf-custom: 1;                   /* Surf: 1 = a tall 2D wave that swells up round the attacker, runs across and crashes on the target; 0 = Showdown's own */
+  --surf-speed: 1;                    /* how fast it plays (1 = 2.3 s: the wave about 1 s, the water running out after it; 2 = twice as fast) */
+  --surf-flash: 0.12;                 /* the blue tint over the battle while it plays (0 = none) */
+  --surf-sheets: 1;                   /* with the "Showdown Surf sheets" style on: 1 = Surf plays your sprite sheets, 0 = the drawn wave above */
+  --surf-sheet-fit: 1;                /* 1 = scale and move the sheets so their two standing spots land on the two Pokemon; 0 = exactly as rendered */
+  --surf-sheet-scale: 1;              /* extra size on top of that (1 = as fitted) */
+  --surf-sheet-x: 0px;                /* nudge the sheets right (minus = left), in battle px */
+  --surf-sheet-y: 0px;                /* nudge the sheets down (minus = up) */
+  --hover-info: 1;                    /* 1 = pointing at a Pokémon shows its info (also on team preview: types and what is known of its stats), and every tooltip appears centred above what you point at; 0 = Showdown's own */
+  --perf-show: 0;                     /* 1 = a speed meter in the tab's title: frames a second, the longest frame, sparkle steps (Alt+P switches it; Alt+Shift+P runs a 9 second speed test and shows its result on the page) */
+  --map1-sun-x: 114px;                /* MAP 1 (the tower): where its sun is in the map's 640 x 410 picture, px from the left edge */
+  --map1-sun-y: 195px;                /* ...and px from the top edge. Another map gets its own --map2-sun-x / -y; a map without them has no sparkles */
+  /* MAP 1's second light: the serpent. While it is out, the sparkles on the parts of each border that ITS light reaches are green: emerald, with some lime and some sea green among them (the parts only the sun reaches stay gold); they fade over as it rises and leaves. The userscript starts the map's picture loop itself so it knows when that is */
+  --map1-serpent-x: 186px;            /* where the serpent's light comes from in the map's 640 x 410 picture (the middle of its body), px from the left edge */
+  --map1-serpent-y: 185px;            /* ...and px from the top edge */
+  --map1-serpent-from: 2.3s;          /* when it starts to rise, seconds into the picture's loop */
+  --map1-serpent-to: 9.6s;            /* when it is gone again */
+  --map1-serpent-fade: 0.5s;          /* how long it takes to come out fully, and to leave (the green fades in and out over this) */
+  --map1-loop: 20s;                   /* how long the map's picture loop is. A map without these six has no second light */
+  /* feet alignment: slides each Pokémon so its lowest visible point lands on the same line whatever its sprite looks like
+     (yours: the bottom line of its box; the opponent's: --foe-ground below the middle of its box) */
+  --snap: 1;                          /* 1 = on, 0 = off */
+  --fix-max: 45px;                    /* largest slide the alignment may make (must be positive) */
+  --foe-ground: 25px;                 /* opponent: how far below the middle of its box the feet land (bigger = every opponent lower) */
+  /* attacks that jump at the other Pokémon (needs userscript 2.8 or later) */
+  --attack-reach: 1;                  /* 1 = the attacker lands right on the other Pokémon, 0 = Showdown's own landing spot (beside it), between = part of the way */
+  /* when the level shakes (Earthquake, Bulldoze, Earth Power), the Pokémon and trainers move with it (needs userscript 2.14 or later) */
+  --shake-follow: 1;                  /* how much of the level's movement they make (1 = the same distance, 0 = they stay still) */
+  --shake-lag: 6;                     /* how many screen frames behind the level they move (0 = together with it, 1 = one frame later) */
+
+  /* ===== 6 TEAM PREVIEW (the face-off with all 6 out) ===== */
+  --tp-x: 50px;                       /* all 12: move across */
+  --tp-player-scale: 1.5;            /* your 6: size compared with their in-battle size */
+  --tp-player-gap-x: 55px;            /* your 6: extra space between neighbours (negative = tighter) */
+  --tp-player-gap-y: 8px;             /* your 6: extra step down from one to the next */
+  --tp-player-x: -95px;               /* your 6: move across */
+  --tp-player-y: -15px;               /* your 6: move down */
+  --tp-foe-scale: 0.7;               /* opponent's 6: size compared with their in-battle size */
+  --tp-foe-gap-x: -5px;                /* opponent's 6: extra space between neighbours (negative = tighter) */
+  --tp-foe-gap-y: -1px;                /* opponent's 6: extra step down from one to the next */
+  --tp-foe-x: 40px;                    /* opponent's 6: move across */
+  --tp-foe-y: 25px;                    /* opponent's 6: move down */
+
+  /* ===== 7 WEATHER (rain, sun, sand, snow) ===== */
+  --wx-opacity: 0.1;                  /* how solid the weather layer is */
+  --wx-brightness: 2;                 /* brightness */
+  --wx-contrast: 1.4;                 /* contrast */
+  --wx-saturate: 3.0;                 /* colour strength */
+  --wx-pixel: 3;                      /* pixel block size (2 = finest, 4 = retro, 6+ = chunky; whole numbers) */
+  --wx-pixel-strength: 1;             /* how blocky (0 = smooth, 1 = full blocks) */
+  --terrain-opacity: 1;               /* Grassy / Electric / Psychic / Misty Terrain (1 = Showdown's normal) */
+
+  /* ===== 8 TOP LINE ===== */
+  /* one line across the very top:  your name, your 6 icons, the VS / Turn sign, their 6 icons, their name */
+  --top-line: 2px;                    /* how far the line sits below the top edge of the window */
+  --top-rise: 50px;                   /* how far your window reaches above Showdown's own battle box (measured on your screenshot);
+                                         if the line is not at the very top, this is the number to change */
+  --top-mid: 44px;                    /* half of the gap left in the middle for the VS / Turn sign */
+  /* trainer names (each centred in the space beside its row of icons) */
+  --trainer-name-show: 1;             /* the two trainer names */
+  --trainer-name-below: 1px;          /* how far below the top line they sit */
+  /* the 6 + 6 small team icons */
+  --teamicon-show: 0.8;               /* how solid they are */
+  --teamicon-zoom: 0.95;              /* size of each icon */
+  --teamicon-pitch: 30px;             /* distance from one icon to the next (40px = Showdown's own spacing, less = tighter) */
+  /* the VS / Turn sign */
+  --turn-opacity: 0.6;                /* how solid it is */
+  --turn-scale: 0.75;                 /* size */
+  --turn-box: 0.15;                   /* darkness of the box behind it (0 = text only) */
+  --turn-y: 0px;                      /* move down */
+  /* weather and field text, e.g. "Rain (4 turns)" (it sits under the sign) */
+  --weather-below: 40px;              /* how far below the top line it starts */
+  --weather-scale: 0.8;               /* size */
+
+  /* ===== 9 HP BARS ===== */
+  /* one thin bar per side, from near the edge of the window toward the sign; both fill from the edge side. */
+  /* The bar and its "72%" together end where that side's row of icons ends, so nothing reaches the sign */
+  --hp-below: 33px;                   /* how far below the top line the bars sit */
+  --hp-thick: 0.5;                    /* thickness (0.5 = about 4 px, 1 = about 8 px) */
+  --hp-opacity: 1;                    /* how solid the bar is; its "72%" and status tags fade with it */
+  --hp-edge: 16px;                    /* gap between the edge of the window and the bar */
+  --hp-text-show: 1;                  /* the "72%" at the bar's inner end */
+  --hp-text-room: 30px;               /* room kept for the "72%" between the bar and the end of the icons (0px if it is hidden) */
+  /* the active Pokémon's name: above the bar, centred under the trainer's name */
+  --mon-name-show: 1;                 /* the two Pokémon names */
+  --mon-name-below: 17px;             /* how far below the top line they sit */
+  --mon-name-in: 10px;                /* how far toward the middle they sit from the centre of the space beside the icons */
+  --mon-name-size: 11px;              /* text size */
+
+  /* ===== 10 BUTTONS ===== */
+  /* one line along the very bottom of the battle window (the userscript measures the window) */
+  --ctrl-font: 0.013;                 /* text size, as a share of the window's width (0.013 = 1.3%) */
+  --ctrl-icon: 0.77;                  /* size of the 6 switch buttons and their icons (1 = as big as the icons in the battle; 0.77 = 40% bigger than the 0.55 before) */
+  --ctrl-tall: 1.4;                   /* height of every button in the line (1 = as before, 1.4 = 40% taller) */
+  --ctrl-gap: 0.3em;                  /* gap between buttons */
+  --ctrl-edge: 4px;                   /* gap between the line and the window's left, right and bottom edges */
+  --ctrl-idle: 1;                     /* how solid the buttons are while the mouse is elsewhere (they turn solid when pointed at) */
+  /* an optional panel behind the whole line */
+  --ctrl-glass: 0;                    /* white tint (0 = none, 0.1 = subtle) */
+  --ctrl-blur: 0px;                   /* how much the tint blurs the battle behind it */
+  --ctrl-border: 0;                   /* thin light edge round it (0 = none) */
+  --ctrl-radius: 6px;                 /* corner rounding */
+
+  /* ===== 11 TEXT AND UI PIXELS ===== */
+  --ui-font: 'Pixelify Sans';         /* pixel font for all battle text: 'Pixelify Sans' (most readable), 'Silkscreen' (chunky,
+                                         all caps), 'VT323' (thin terminal style), 'Press Start 2P' (classic, wide) */
+  --ui-font-weight: 500;              /* 400 = regular, 500 = medium, 600 = bold (Pixelify Sans only) */
+  --ui-font-scale: 1.1;               /* text size (pixel fonts run small: 1.1 = 10% bigger) */
+  --ui-text-outline: 0.6;             /* dark outline behind text so it reads on busy backgrounds (0 = none, 0.6 = subtle, 1 = strong) */
+  /* pixelation of UI shapes: url(#ps-pixelate-ui) = on, none = off */
+  --ui-bars: url(#ps-pixelate-ui);    /* the HP bar fill (the "72%" stays crisp) */
+  --ui-boxes: none;                   /* the VS / Turn sign box (its text sits inside, so this also fattens the letters) */
+  --ui-buttons: none;                 /* button shapes (also hits their text) */
+  --ui-pixel: 3;                      /* block size for the above (odd numbers like 3 or 5 stay crispest) */
+  --ui-pixel-strength: 1;             /* how blocky (0 = smooth, 1 = full blocks) */
+
+  /* ===== 12 BATTLE LOG (right-hand column) ===== */
+  --log-font: var(--ui-font);         /* var(--ui-font) = same pixel font as the battle; or a name like 'Silkscreen', or Verdana */
+  --log-size: 15px;                   /* text size */
+  --log-weight: 400;                  /* 400 = regular, 500 = medium */
+
+  /* ===== 13 ROOM AND TALK BUBBLES (needs userscript 2.34 or later) ===== */
+  /* the room */
+  --log-show: 1;                      /* the chat log column beside the battle when NOT maximized: 1 = shown (Showdown's own layout, with its chat line), 0 = removed. (Maximized, it is always removed, and the chat line sits inside the battle) */
+  --battle-fit: 1;                    /* with the log removed: 1 = the battle is enlarged to fill the room, 0 = left at its own size */
+  --battle-fit-max: 4;                /* the most it may be enlarged (2 = twice its own size) */
+  --chat-line-show: 1;                /* with the log removed: the line you type chat into, inside the battle at its lower right corner, just above the line of buttons (1 = shown, 0 = hidden) */
+  --battle-maximize: 1;               /* "maximize battle screen": 1 = while a battle is showing, ONLY the battle is on the page (no top bar, no tabs, no other panels, no log), as big as the window allows; 0 = off. The small button at the lower right corner of the battle (beside the chat line) switches it, and so does Alt+M: for getting back to the other tabs without touching this setting */
+  --chat-box-share: 0.2;              /* how wide the chat line is, as a share of the battle's width (0.2 = a fifth) */
+  --chat-box-gap: 4px;                /* space between the chat line and the buttons under it */
+  --chat-box-x: 0px;                  /* nudge the chat line and the maximize button: right (+) or left (-) */
+  --chat-box-y: 0px;                  /* ...down (+) or up (-) */
+  --max-button-show: 1;               /* the maximize button: 1 = shown, 0 = hidden (Alt+M still works) */
+  --max-button-size: 26px;            /* its size */
+  /* effects */
+  --fx-follow: 1;                     /* hit effects, pop-ups ("-25%", "Burned!") and things that fly off start from where the Pokémon are drawn: 1 = on, 0 = where Showdown puts them */
+  --ball-from-trainer: 1;             /* Poké Balls: 1 = a thrown ball leaves from its trainer and lands where the Pokémon comes out, and a ball taking a Pokémon back goes to its trainer; 0 = Showdown's own path */
+  --ball-from-x: 0.5;                 /* where in the trainer's picture the ball leaves from: across, from the picture's back edge toward the way the trainer faces (0.5 = the middle) */
+  --ball-from-y: 0.45;                /* ...and down from the picture's top (0.45 = about hand height) */
+  /* pop-ups over a Pokémon when something happens to it ("-25%", "Burned", "1.5x SpA", an ability's name): bold text in the colour Showdown's little button had (red = damage and drops, green = healing and boosts, grey = neutral, each status its own colour, blue-green = abilities) */
+  --result-opacity: 1;                /* how solid they are (0.6 = see-through) */
+  --result-size: 13px;                /* text size */
+  --result-outline: 1;                /* thin outline round the letters so they read on any background (0 = none, 1 = solid) */
+  --result-outline-color: 255, 255, 255;/* its colour (red, green, blue): 255, 255, 255 = white, 0, 0, 0 = black */
+  /* talk bubbles: what the two players say in the battle's chat, shown beside their trainers */
+  --bubble-show: 1;                   /* 1 = on, 0 = off */
+  --bubble-time: 6s;                  /* how long a bubble stays */
+  --bubble-width: 150px;              /* the widest a bubble gets before its text wraps onto the next line */
+  --bubble-size: 11px;                /* text size */
+  --bubble-font: var(--ui-font);      /* its font (var(--ui-font) = the battle's pixel font) */
+  --bubble-max-letters: 140;          /* longer messages are cut off with "…" */
+  --bubble-face-x: 0.14;              /* where the face is in a trainer's picture: how far its side is from the picture's middle, as a share of the picture's width */
+  --bubble-face-y: 0.28;              /* ...and how far down from the picture's top, as a share of its height */
+  --bubble-gap: 6px;                  /* space between the face and the tip of the bubble's point (the bubble sits up and to the side of the face) */
+  --bubble-player-x: 7px;             /* YOUR bubble (to the right of your trainer's face): move it across */
+  --bubble-player-y: -7px;            /* ...and down. (7px, -7px: 10 px further out, diagonally up and away from the face) */
+  --bubble-player-scale: 1.5;         /* YOUR bubble's size, text and all (1 = as set below; it grows away from the tip of its point) */
+  --bubble-foe-scale: 1;              /* the OPPONENT's bubble's size */
+  --bubble-foe-x: 0px;                /* the OPPONENT's bubble (to the left of their trainer's face): move it across */
+  --bubble-foe-y: 0px;                /* ...and down */
+  --bubble-color: 16, 28, 82;         /* the bubble's fill colour (red, green, blue): dark blue */
+  --bubble-opacity: 0.8;              /* how solid the fill is */
+  --bubble-text-color: rgba(255, 255, 255, 0.9);   /* the letters: white at 90% */
+  --bubble-border: 1px;               /* outline thickness */
+  --bubble-border-color: rgba(255, 255, 255, 0.9); /* the outline: white at 90% */
+  --bubble-radius: 7px;               /* corner rounding */
+  --bubble-tail: 9px;                 /* how long the point toward the speaker is (it leaves the bubble's bottom corner nearest the speaker, diagonally) */
+  --bubble-pad: 4px 7px;              /* space inside, round the text (top and bottom, left and right) */
+}
+
+/* ---------- EACH MAP'S SHADOW NUMBERS ---------- */
+/* hands every battle the shadow numbers of the map it got (--mapN-shadow-... in the settings, N = its slot).
+   The four angles exist per map only; a map that has none in the settings, and a battle without a map (Showdown's own
+   backgrounds), get the plain ones written here (40, 44, 58 and 62 degrees). Length, strength and blur fall back to
+   the general ones in the settings. Nothing to edit here */
+html:root body .battle {
+  --sh-angle-foe-trainer: 40deg;
+  --sh-angle-foe: 44deg;
+  --sh-angle-player: 58deg;
+  --sh-angle-player-trainer: 62deg;
+  --sh-length: var(--map-shadow-length);
+  --sh-strength: var(--map-shadow-strength);
+  --sh-blur: var(--map-shadow-blur);
+}
+html:root body .battle[data-ps-map="1"] {
+  --sh-angle-foe-trainer: var(--map1-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map1-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map1-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map1-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map1-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map1-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map1-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="2"] {
+  --sh-angle-foe-trainer: var(--map2-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map2-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map2-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map2-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map2-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map2-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map2-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="3"] {
+  --sh-angle-foe-trainer: var(--map3-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map3-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map3-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map3-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map3-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map3-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map3-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="4"] {
+  --sh-angle-foe-trainer: var(--map4-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map4-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map4-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map4-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map4-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map4-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map4-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="5"] {
+  --sh-angle-foe-trainer: var(--map5-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map5-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map5-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map5-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map5-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map5-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map5-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="6"] {
+  --sh-angle-foe-trainer: var(--map6-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map6-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map6-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map6-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map6-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map6-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map6-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="7"] {
+  --sh-angle-foe-trainer: var(--map7-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map7-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map7-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map7-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map7-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map7-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map7-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="8"] {
+  --sh-angle-foe-trainer: var(--map8-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map8-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map8-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map8-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map8-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map8-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map8-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="9"] {
+  --sh-angle-foe-trainer: var(--map9-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map9-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map9-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map9-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map9-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map9-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map9-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="10"] {
+  --sh-angle-foe-trainer: var(--map10-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map10-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map10-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map10-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map10-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map10-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map10-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="11"] {
+  --sh-angle-foe-trainer: var(--map11-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map11-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map11-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map11-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map11-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map11-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map11-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="12"] {
+  --sh-angle-foe-trainer: var(--map12-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map12-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map12-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map12-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map12-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map12-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map12-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="13"] {
+  --sh-angle-foe-trainer: var(--map13-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map13-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map13-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map13-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map13-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map13-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map13-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="14"] {
+  --sh-angle-foe-trainer: var(--map14-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map14-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map14-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map14-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map14-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map14-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map14-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="15"] {
+  --sh-angle-foe-trainer: var(--map15-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map15-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map15-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map15-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map15-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map15-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map15-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="16"] {
+  --sh-angle-foe-trainer: var(--map16-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map16-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map16-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map16-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map16-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map16-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map16-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="17"] {
+  --sh-angle-foe-trainer: var(--map17-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map17-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map17-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map17-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map17-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map17-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map17-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="18"] {
+  --sh-angle-foe-trainer: var(--map18-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map18-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map18-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map18-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map18-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map18-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map18-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="19"] {
+  --sh-angle-foe-trainer: var(--map19-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map19-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map19-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map19-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map19-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map19-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map19-shadow-blur, var(--map-shadow-blur));
+}
+html:root body .battle[data-ps-map="20"] {
+  --sh-angle-foe-trainer: var(--map20-shadow-angle-foe-trainer, 40deg);
+  --sh-angle-foe: var(--map20-shadow-angle-foe, 44deg);
+  --sh-angle-player: var(--map20-shadow-angle-player, 58deg);
+  --sh-angle-player-trainer: var(--map20-shadow-angle-player-trainer, 62deg);
+  --sh-length: var(--map20-shadow-length, var(--map-shadow-length));
+  --sh-strength: var(--map20-shadow-strength, var(--map-shadow-strength));
+  --sh-blur: var(--map20-shadow-blur, var(--map-shadow-blur));
+}
+
+/* ---------- ONE SET OF KNOBS FOR EVERY BACKGROUND ---------- */
+/* each animated background is its own Stylus style with its own --cbg-contrast, --cbg-brightness
+   and --cbg-saturate. This hands them the three numbers from the BACKGROUND block above, so
+   --bg-contrast, --bg-brightness and --bg-saturate work on Showdown's backgrounds and on the
+   animated ones alike (the --cbg- numbers typed in a background's own style are no longer used) */
+html:root {
+  --cbg-contrast: var(--bg-contrast);
+  --cbg-brightness: var(--bg-brightness);
+  --cbg-saturate: var(--bg-saturate);
+}
+
+/* ---------- SPRITES ---------- */
+
+/* all Pokémon: slight pop. (The oval shadow that used to sit under each one is gone; the cast shadows are the only shadows.)
+   "> div > div > img" = only the Pokémon in the sprite layer; the small type, Tera
+   and Mega icons inside the HP labels also come from /sprites/ and must be left alone */
+.battle .innerbattle > div > div > img[src*="/sprites/"] {
+  filter: contrast(1.06) saturate(1.1) drop-shadow(0 0 1px rgba(0,0,0,0.6));
+  image-rendering: pixelated;
+
+  /* slide so the body sits on the box's center line, left-right (capped) */
+  --fix-x: clamp(
+    calc(-1 * var(--fix-max)),
+    calc((0.5 - var(--feet-x, 0.5)) * var(--box-w, 0px) * var(--snap)),
+    var(--fix-max)
+  );
+}
+
+/* opponent's Pokémon: grows around its feet; feet land --foe-ground below center (capped) */
+.battle .innerbattle > div > div > img[src*="/sprites/"]:not([src*="-back"]) {
+  filter:
+    contrast(calc(1.06 * var(--foe-contrast)))
+    saturate(calc(1.1 * var(--foe-saturate)))
+    brightness(var(--foe-brightness))
+    drop-shadow(0 0 1px rgba(0,0,0,0.6)) !important;
+  transform-origin:
+    calc(var(--feet-x, 0.5) * 100%)
+    calc(var(--feet-y, 0.85) * 100%) !important;
+  --fix-y: clamp(
+    calc(-1 * var(--fix-max)),
+    calc((var(--foe-ground) - (var(--feet-y, 0.5) - 0.5) * var(--box-h, 0px)) * var(--snap)),
+    var(--fix-max)
+  );
+  /* --go = how far it has gone toward your Pokémon (0 at home, 1 there; from the userscript), times --attack-reach:
+     on the way it slides from the opponent's shift and size to yours, so it lands on your Pokémon */
+  --go: calc(var(--trav, 0) * var(--attack-reach));
+  transform:
+    translate(
+      calc(var(--foe-x) + (var(--player-x) - var(--foe-x)) * var(--go) + var(--fix-x)),
+      calc(var(--foe-y) + (var(--player-y) - var(--foe-y)) * var(--go) + var(--fix-y) + var(--shake-y, 0px))    /* (--shake-y: the level's shake, from the userscript) */
+    )
+    scale(calc(var(--foe-scale) + (var(--player-scale) - var(--foe-scale)) * var(--go))) !important;
+}
+
+/* your Pokémon: its lowest visible point (its feet) is put on the bottom line of its box, and it grows up from there.
+   Back sprites that fill their box down to the bottom were already on that line; small ones that leave empty rows
+   under their feet used to stand higher by those rows (times the size), so different Pokémon stood at different
+   heights. The slide down is capped like the opponent's, by --fix-max (with --snap: 0 it is as before) */
+.battle .innerbattle > div > div > img[src*="/sprites/"][src*="-back"] {
+  filter:
+    url(#ps-player-lines)                                /* (--player-lines: its thinner black border, from the userscript) */
+    contrast(calc(1.06 * var(--player-contrast)))
+    saturate(calc(1.1 * var(--player-saturate)))
+    brightness(var(--player-brightness))
+    drop-shadow(0 0 1px rgba(0,0,0,0.6)) !important;
+  transform-origin:
+    calc(var(--feet-x, 0.5) * 100%)
+    calc((1 - (1 - var(--feet-y, 1)) * var(--snap)) * 100%) !important;
+  --fix-y: clamp(
+    0px,
+    calc((1 - var(--feet-y, 1)) * var(--box-h, 0px) * var(--snap)),
+    calc(2 * var(--fix-max))      /* (Showdown draws your side at twice the size, so the same cap is twice as many px here) */
+  );
+  /* (the same the other way round: on its way to the opponent's Pokémon it slides to the opponent's shift and size) */
+  --go: calc(var(--trav, 0) * var(--attack-reach));
+  transform:
+    translate(
+      calc(var(--player-x) + (var(--foe-x) - var(--player-x)) * var(--go) + var(--fix-x)),
+      calc(var(--player-y) + (var(--foe-y) - var(--player-y)) * var(--go) + var(--fix-y) + var(--shake-y, 0px))
+    )
+    scale(calc(var(--player-scale) + (var(--foe-scale) - var(--player-scale)) * var(--go))) !important;
+}
+
+/* ---------- TEAM PREVIEW (face-off with all 6 out) ---------- */
+/* the userscript adds "ps-tp" to the battle and numbers each Pokémon with --tp-i */
+
+/* the gender sign and level Showdown writes under each of the twelve: hidden (the item marker beside them stays) */
+html body .battle.ps-tp .innerbattle > div > div > div > img[src*="gender-"],
+html body .battle.ps-tp .innerbattle > div > div > div > span {
+  display: none !important;
+}
+
+/* opponent's six: spread out from the middle, shifted, and resized */
+html body .battle.ps-tp .innerbattle > div > div > img[src*="/sprites/"]:not([src*="-back"]) {
+  transform:
+    translate(
+      calc(var(--foe-x) + var(--fix-x) + var(--tp-x) + var(--tp-foe-x) + var(--tp-i, 0) * var(--tp-foe-gap-x)),
+      calc(var(--foe-y) + var(--fix-y) + var(--tp-foe-y) + var(--tp-i, 0) * var(--tp-foe-gap-y))
+    )
+    scale(calc(var(--foe-scale) * var(--tp-foe-scale))) !important;
+}
+
+/* your six: spread out from the middle, shifted, lowered, and resized */
+html body .battle.ps-tp .innerbattle > div > div > img[src*="/sprites/"][src*="-back"] {
+  transform:
+    translate(
+      calc(var(--player-x) + var(--fix-x) + var(--tp-x) + var(--tp-player-x) + var(--tp-i, 0) * var(--tp-player-gap-x)),
+      calc(var(--player-y) + var(--fix-y) + var(--tp-player-y) + var(--tp-i, 0) * var(--tp-player-gap-y))
+    )
+    scale(calc(var(--player-scale) * var(--tp-player-scale))) !important;
+}
+
+/* ---------- HP BARS ---------- */
+
+/* each label is shrunk to a single point near its side's edge of the window (--hp-edge in from it), just under the
+   row of icons; the bar and the Pokémon's name are laid out from that point further down (see "HP BARS ALONG
+   THE TOP"). (The battle is always 640 px wide, so 320px = its middle.)
+   --hp-len = the bar's length: from the point to the inner end of the icons, less the room for the "72%" (and
+   the 4 px between them), so the bar and its text never pass the end of the icons, where the sign's space begins
+   --hp-sx = how much longer that is than Showdown's own bar (153 px), as a plain number
+   --hp-side = from the point to where the Pokémon's name is centred: the middle of the space beside the icons,
+   moved --mon-name-in toward the sign */
+html body .battle .statbar {
+  --hp-len: calc(320px - var(--top-mid) - var(--hp-edge) - 4px - var(--hp-text-room));
+  --hp-sx: tan(atan2(var(--hp-len), 153px));
+  --hp-side: calc((320px - var(--top-mid) - 6 * var(--teamicon-pitch)) / 2 - var(--hp-edge) + var(--mon-name-in));
+  top: calc(var(--top-line) - var(--top-rise) + var(--hp-below)) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+}
+/* you (left of the sign): the point is just in from the left edge of the window */
+html body .battle .statbar.rstatbar {
+  left: var(--hp-edge) !important;
+}
+/* opponent (right of the sign): the point is just in from the right edge of the window */
+html body .battle .statbar.lstatbar {
+  left: calc(100% - var(--hp-edge)) !important;
+}
+
+/* name, level and gender icon */
+html body .battle .statbar strong,
+html body .battle .statbar strong * {
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+html body .battle .statbar strong small {
+  font-size: calc(13px * 0.8) !important;
+}
+
+/* bar thickness: the outer frame and the green fill */
+html body .battle .statbar .hpbar {
+  height: 6px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-width: 1px !important;
+  box-sizing: content-box !important;
+}
+html body .battle .statbar .hpbar .prevhp,
+html body .battle .statbar .hpbar .hp {
+  height: 6px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  top: 0 !important;
+}
+
+/* the "100%" text beside the bar */
+html body .battle .statbar .hptext {
+  font-size: 11px !important;
+  line-height: 6px !important;
+}
+
+/* ---------- CONTROLS ---------- */
+
+/* placed where you set it, stretched to just inside the battle map's right and bottom edges */
+html body .battle-controls {
+  font-size: calc(var(--bw, 640px) * var(--ctrl-font)) !important;
+
+  /* how many times bigger than 640 px the battle window is drawn (a plain number; for the switch icons) */
+  --ctrl-k: tan(atan2(var(--bw, 640px), 640px));
+  --ik: calc(var(--ctrl-k) * var(--ctrl-icon));
+
+  /* a strip across the window's width whose bottom edge sits on the window's bottom edge */
+  left: calc(var(--bx, 0px) + var(--ctrl-edge)) !important;
+  top: calc(var(--by, 0px) + var(--bh, 360px) - var(--ctrl-edge)) !important;
+  translate: 0 -100% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: calc(var(--bw, 640px) - 2 * var(--ctrl-edge)) !important;
+  height: auto !important;
+  max-height: none !important;
+
+  /* frosted glass panel behind the buttons */
+  background: rgba(255, 255, 255, var(--ctrl-glass)) !important;
+  backdrop-filter: blur(var(--ctrl-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--ctrl-blur)) !important;
+  border: 1px solid rgba(255, 255, 255, var(--ctrl-border)) !important;
+  border-radius: var(--ctrl-radius) !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  transform: none !important;
+  opacity: var(--ctrl-idle) !important;       /* (solid again the moment the mouse is over them) */
+  transition: opacity 0.15s;
+}
+html body .battle-controls:hover,
+html body .battle-controls:focus-within {
+  opacity: 1 !important;
+}
+
+/* buttons and text inside scale with the battle window */
+html body .battle-controls button,
+html body .battle-controls p,
+html body .battle-controls small,
+html body .battle-controls strong,
+html body .battle-controls span {
+  font-size: 1em !important;
+}
+html body .battle-controls button {
+  padding: 0.35em 0.7em !important;
+}
+
+/* ---------- TOP BAR: TRAINERS, TEAM ICONS, TURN SIGN, WEATHER ---------- */
+
+/* ONE LINE ACROSS THE TOP: name, 6 icons, VS / Turn sign, 6 icons, name.
+   Showdown keeps each side's name, character and icons inside its own side bar. The bars and the blocks inside
+   them are dissolved here (their contents stay), so every piece can be placed from the middle of the battle
+   window, wherever anything else would have put the bars */
+html:root body .battle .leftbar,
+html:root body .battle .rightbar,
+html:root body .battle .leftbar .trainer,
+html:root body .battle .rightbar .trainer {
+  display: contents !important;
+}
+/* the icons: Showdown keeps them as two groups of three; the groups are set side by side */
+html body .battle .trainer .teamicons {
+  position: absolute !important;
+  top: calc(var(--top-line) - var(--top-rise)) !important;
+  bottom: auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, var(--teamicon-pitch)) !important;
+  justify-items: center !important;
+  gap: 0 !important;
+  width: max-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  translate: none !important;
+  opacity: var(--teamicon-show) !important;
+}
+/* yours: left of the sign */
+html body .battle .leftbar .trainer .teamicons {
+  right: calc(50% + var(--top-mid) + 3 * var(--teamicon-pitch)) !important;
+  left: auto !important;
+}
+html body .battle .leftbar .trainer .teamicons ~ .teamicons {
+  right: calc(50% + var(--top-mid)) !important;
+}
+/* theirs: right of the sign */
+html body .battle .rightbar .trainer .teamicons {
+  left: calc(50% + var(--top-mid)) !important;
+  right: auto !important;
+}
+html body .battle .rightbar .trainer .teamicons ~ .teamicons {
+  left: calc(50% + var(--top-mid) + 3 * var(--teamicon-pitch)) !important;
+}
+
+/* each icon: bigger in place */
+html body .battle .teamicons .picon,
+html body .battle .teamicons span {
+  transform: scale(var(--teamicon-zoom)) !important;
+  transform-origin: 50% 50%;
+  margin: 0 !important;
+  image-rendering: pixelated;
+}
+/* your side's icons are mirrored by Showdown so they face the middle; keep that */
+html body .battle .leftbar .teamicons .picon,
+html body .battle .leftbar .teamicons span {
+  transform: scale(calc(-1 * var(--teamicon-zoom)), var(--teamicon-zoom)) !important;
+}
+
+/* trainer names: each centred in the empty space between its edge of the screen and its row of icons
+   (--top-side = the middle of that space, measured from the edge) */
+html body .battle .trainer strong {
+  --top-side: calc((50% - var(--top-mid) - 6 * var(--teamicon-pitch)) / 2);
+}
+html body .battle .trainer strong {
+  position: absolute !important;
+  top: calc(var(--top-line) - var(--top-rise) + var(--trainer-name-below)) !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  width: max-content !important;
+  max-width: none !important;
+  opacity: var(--trainer-name-show) !important;
+}
+html body .battle .leftbar .trainer strong {
+  left: var(--top-side) !important;
+  right: auto !important;
+  translate: -50% 0 !important;
+}
+html body .battle .rightbar .trainer strong {
+  right: var(--top-side) !important;
+  left: auto !important;
+  translate: 50% 0 !important;
+}
+
+/* the two trainers: standing in the battle. The opponent's is drawn behind the Pokémon, yours in front of them.
+   Showdown draws both after the Pokémon, which puts them in front. For the opponent's, the background is sent
+   to the very back (-2) and the trainer just in front of it (-1), so the rain, the Pokémon and everything else
+   stay on top of it; "isolation" keeps that order inside the battle window, so nothing slips behind the window */
+html body .battle {
+  isolation: isolate !important;
+}
+html body .battle .innerbattle > .backdrop {
+  z-index: -2 !important;
+}
+html body .battle .trainer .trainersprite {
+  position: absolute !important;
+  z-index: -1 !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  translate: -50% calc(-100% + var(--shake-y, 0px)) !important;   /* (the point that is placed = the middle of the feet; --shake-y = the level's shake, from the userscript) */
+  transform-origin: 50% 100% !important;     /* (grows up from the feet) */
+  image-rendering: pixelated !important;
+  opacity: var(--trainer-show) !important;
+}
+/* you: in front of the Pokémon (Showdown mirrors your trainer so it faces the opponent; that is kept) */
+html body .battle .leftbar .trainer .trainersprite {
+  z-index: auto !important;
+  left: var(--player-trainer-x) !important;
+  top: calc(var(--player-trainer-y) - var(--top-rise)) !important;
+  scale: var(--player-trainer-scale) !important;
+  filter:
+    url(#ps-player-trainer-lines)
+    saturate(var(--player-trainer-saturate))
+    contrast(var(--player-trainer-contrast))
+    brightness(var(--player-trainer-brightness)) !important;
+}
+/* opponent: behind the Pokémon */
+html body .battle .rightbar .trainer .trainersprite {
+  left: var(--foe-trainer-x) !important;
+  top: calc(var(--foe-trainer-y) - var(--top-rise)) !important;
+  scale: var(--foe-trainer-scale) !important;
+  filter:
+    saturate(var(--foe-trainer-saturate))
+    contrast(var(--foe-trainer-contrast))
+    brightness(var(--foe-trainer-brightness)) !important;
+}
+
+/* VS / Turn sign: faded, in the middle of the top line */
+html body .battle .turn {
+  position: absolute !important;     /* (placed from the battle itself, so 50% is the battle's middle) */
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+  top: calc(var(--top-line) - var(--top-rise)) !important;
+  opacity: var(--turn-opacity) !important;
+  translate: -50% var(--turn-y) !important;
+  scale: var(--turn-scale) !important;
+  transform-origin: 50% 0 !important;
+  background: rgba(0, 0, 0, var(--turn-box)) !important;
+  box-shadow: none !important;
+  border-color: rgba(255, 255, 255, calc(var(--turn-box) * 0.5)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* each new turn slides in over the old one; hide the old one right away so there's
+   never a double box (the fade that normally hides it is blocked by the opacity above) */
+html body .battle .turn:not(:last-child) {
+  display: none !important;
+}
+
+/* weather text: the original (inside the rain) is hidden... */
+html body .battle .weather > em {
+  visibility: hidden !important;
+}
+
+/* ...and the crisp copy from the userscript is shown, centered under the VS / Turn sign */
+html body .battle .ps-weather-label {
+  position: absolute !important;
+  left: 50% !important;
+  top: calc(var(--top-line) + var(--weather-below)) !important;   /* (this text is placed from the top of the screen itself, so no --top-rise here) */
+  translate: -50% 0 !important;
+  scale: var(--weather-scale) !important;          /* (shrinks toward its top edge) */
+  transform-origin: 50% 0 !important;
+  white-space: nowrap !important;
+  text-align: center !important;   /* several lines (weather, Reflect, Tailwind...) stay centered */
+  line-height: 1.3 !important;
+  margin: 0 !important;
+  font-style: italic;
+  z-index: 5 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s;
+}
+
+/* ---------- BACKGROUND (pixelation, darks and lights come from the userscript) ---------- */
+
+html body .battle .backdrop {
+  filter:
+    url(#ps-pixelate)
+    url(#ps-darks)
+    url(#ps-lights)
+    contrast(var(--bg-contrast))
+    brightness(var(--bg-brightness))
+    saturate(var(--bg-saturate))
+    hue-rotate(var(--bg-hue))
+    sepia(var(--bg-sepia))
+    blur(var(--bg-blur)) !important;
+  opacity: var(--bg-opacity) !important;
+  translate: var(--bg-x) var(--bg-y) !important;
+  scale: var(--bg-zoom) !important;
+}
+
+/* haze over the background (behind the Pokémon), with the vignette drawn on top.
+   The background picture is bigger than the battle window and hangs off its edges,
+   so the userscript measures the visible part (--vis-*) and the haze/vignette cover
+   exactly that, even when you zoom or pan the background */
+html body .battle .backdrop::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto !important;
+  /* until the userscript has measured, cover the whole picture (never leaves a gap) */
+  left: var(--vis-x, 0px) !important;
+  top: var(--vis-y, 0px) !important;
+  width: var(--vis-w, 100%) !important;
+  height: var(--vis-h, 100%) !important;
+  background: linear-gradient(
+    to top,
+    rgba(var(--haze-color), 0) var(--haze-start),
+    rgba(var(--haze-color), calc(var(--haze-top) * 0.55)) calc((var(--haze-start) + var(--haze-end)) / 2),
+    rgba(var(--haze-color), var(--haze-top)) var(--haze-end)
+  ) !important;
+  box-shadow: inset 0 0 var(--bg-vignette-size) calc(var(--bg-vignette-size) / 3)
+    rgba(0, 0, 0, var(--bg-vignette)) !important;
+  pointer-events: none !important;
+}
+
+/* ---------- WEATHER (pixelation comes from the userscript) ---------- */
+
+/* Showdown has two layers with the class "weather": terrain first, then the weather */
+html body .battle .innerbattle > .weather {
+  filter:
+    url(#ps-pixelate-weather)
+    contrast(var(--wx-contrast))
+    brightness(var(--wx-brightness))
+    saturate(var(--wx-saturate)) !important;
+  opacity: var(--terrain-opacity) !important;          /* terrain layer */
+}
+html body .battle .innerbattle > .weather + .weather {
+  opacity: var(--wx-opacity) !important;               /* weather layer (rain, sun, sand, snow) */
+}
+
+/* ---------- UI: PIXEL FONT FOR TEXT, PIXELATION FOR SHAPES ---------- */
+
+/* readable pixel font on every piece of battle text, drawn without smoothing */
+html body .battle .statbar strong,
+html body .battle .statbar strong *,
+html body .battle .statbar .hptext,
+html body .battle .statbar .status span,
+html body .battle .turn,
+html body .battle .trainer strong,
+html body .battle .ps-weather-label,
+html body .battle .ps-weather-label *,
+html body .battle .messagebar,
+html body .battle .message,
+html body .battle-controls,
+html body .battle-controls button,
+html body .battle-controls p,
+html body .battle-controls small,
+html body .battle-controls strong,
+html body .battle-controls span {
+  font-family: var(--ui-font), monospace !important;
+  font-weight: var(--ui-font-weight) !important;
+  font-style: normal !important;
+  letter-spacing: 0.02em !important;
+  -webkit-font-smoothing: none !important;
+  text-rendering: optimizeSpeed !important;
+}
+
+/* pixel fonts are drawn small, so nudge text up a bit */
+html body .battle .statbar strong   { font-size: calc(13px * var(--ui-font-scale)) !important; }
+html body .battle .statbar .hptext  { font-size: calc(11px * var(--ui-font-scale)) !important; }
+html body .battle-controls          { font-size: calc(var(--bw, 640px) * var(--ctrl-font) * var(--ui-font-scale)) !important; }
+
+/* crisp 1px dark outline behind text (replaces soft glows that blur pixel fonts) */
+html body .battle .statbar strong,
+html body .battle .statbar .hptext,
+html body .battle .turn,
+html body .battle .trainer strong,
+html body .battle .ps-weather-label,
+html body .battle .messagebar,
+html body .battle .message {
+  text-shadow:
+     1px  0   0 rgba(0, 0, 0, var(--ui-text-outline)),
+    -1px  0   0 rgba(0, 0, 0, var(--ui-text-outline)),
+     0    1px 0 rgba(0, 0, 0, var(--ui-text-outline)),
+     0   -1px 0 rgba(0, 0, 0, var(--ui-text-outline)) !important;
+}
+
+/* message box: keep its bold parts (like names) at a readable weight */
+html body .battle .messagebar strong,
+html body .battle .message strong,
+html body .battle .messagebar b,
+html body .battle .message b {
+  font-family: var(--ui-font), monospace !important;
+  font-weight: 600 !important;
+}
+
+/* pixelate shapes only, never the letters */
+html body .battle .statbar .hpbar   { filter: none !important; }
+html body .battle .statbar .hpbar .hp,
+html body .battle .statbar .hpbar .prevhp { filter: var(--ui-bars) !important; }
+html body .battle .turn,
+html body .battle .messagebar       { filter: var(--ui-boxes) !important; }
+html body .battle-controls button   { filter: var(--ui-buttons) !important; }
+
+/* ---------- HP BARS ALONG THE TOP, POKÉMON NAMES ABOVE THEM, NO NARRATOR ---------- */
+
+/* the bar: stretched to --hp-len and thinned */
+html body .battle .innerbattle .statbar .hpbar {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+  transform-origin: 0 0 !important;
+  opacity: var(--hp-opacity) !important;
+}
+/* yours runs right from its point and fills from that end */
+html body .battle .innerbattle .statbar.rstatbar .hpbar {
+  transform: scale(var(--hp-sx), var(--hp-thick)) !important;
+}
+/* theirs is mirrored: it runs left from its point and fills from that end */
+html body .battle .innerbattle .statbar.lstatbar .hpbar {
+  transform: scale(calc(-1 * var(--hp-sx)), var(--hp-thick)) !important;
+}
+/* the "72%": normal size and the right way round again, just past the bar's inner end (in the room kept for it,
+   under the last icon), no box behind it */
+html body .battle .innerbattle .statbar .hpbar .hptext {
+  top: 50% !important;
+  translate: 0 -50% !important;
+  margin: 0 !important;
+  width: max-content !important;
+  height: auto !important;
+  line-height: 1 !important;
+  background: none !important;
+  border-radius: 0 !important;
+  opacity: var(--hp-text-show) !important;
+}
+html body .battle .innerbattle .statbar.rstatbar .hpbar .hptext {
+  left: calc(100% + 4px / var(--hp-sx)) !important;
+  right: auto !important;
+  transform-origin: 0 50% !important;
+  transform: scale(calc(1 / var(--hp-sx)), calc(1 / var(--hp-thick))) !important;
+}
+html body .battle .innerbattle .statbar.lstatbar .hpbar .hptext {
+  left: calc(100% + 4px / var(--hp-sx)) !important;
+  right: auto !important;
+  transform-origin: 0 50% !important;
+  transform: scale(calc(-1 / var(--hp-sx)), calc(1 / var(--hp-thick))) translateX(-100%) !important;
+}
+html body .battle .innerbattle .statbar .hpbar .hptextborder {
+  display: none !important;
+}
+/* status, boosts and type tags: normal size, just under the bar, starting at its outer end */
+html body .battle .innerbattle .statbar .hpbar .status {
+  position: absolute !important;
+  top: calc(100% + 3px / var(--hp-thick)) !important;
+  margin: 0 !important;
+  width: max-content !important;
+  max-width: calc(6 * var(--teamicon-pitch) - 24px) !important;
+}
+html body .battle .innerbattle .statbar.rstatbar .hpbar .status {
+  left: 0 !important;
+  right: auto !important;
+  text-align: left !important;
+  transform-origin: 0 0 !important;
+  transform: scale(calc(1 / var(--hp-sx)), calc(1 / var(--hp-thick))) !important;
+}
+html body .battle .innerbattle .statbar.lstatbar .hpbar .status {
+  right: 100% !important;
+  left: auto !important;
+  text-align: right !important;
+  transform-origin: 100% 0 !important;
+  transform: scale(calc(-1 / var(--hp-sx)), calc(1 / var(--hp-thick))) !important;
+}
+/* the Pokémon's name, with its Tera or Mega icon after it (no level, no gender): above the bar, centred in the
+   space beside the icons, under the trainer's name */
+html body .battle .innerbattle .statbar strong {
+  position: absolute !important;
+  top: calc(var(--mon-name-below) - var(--hp-below)) !important;
+  right: auto !important;
+  margin: 0 !important;
+  width: max-content !important;
+  font-size: calc(var(--mon-name-size) * var(--ui-font-scale)) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  translate: -50% 0 !important;
+  opacity: var(--mon-name-show) !important;
+}
+html body .battle .innerbattle .statbar.rstatbar strong {
+  left: var(--hp-side) !important;
+}
+html body .battle .innerbattle .statbar.lstatbar strong {
+  left: calc(-1 * var(--hp-side)) !important;
+}
+html body .battle .innerbattle .statbar strong small,
+html body .battle .innerbattle .statbar strong img[src*="gender"] {
+  display: none !important;
+}
+html body .battle .innerbattle .statbar strong img:not([src*="gender"]) {
+  width: 1em !important;
+  height: 1em !important;
+  vertical-align: -0.15em !important;
+}
+
+/* the narrator at the bottom of the battle: gone (the log on the right has every line) */
+html body .battle .messagebar {
+  display: none !important;
+}
+
+/* ---------- BUTTONS: ONE LINE ALONG THE BOTTOM ---------- */
+/* moves, the Tera / Mega tick box, the 6 switch icons, then whatever else there is (timer, Cancel, replay
+   buttons). The groups Showdown wraps them in are dissolved so every button sits in the same row */
+html body .battle-controls > div {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  gap: var(--ctrl-gap) !important;
+  position: static !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+}
+html body .battle-controls .movecontrols,
+html body .battle-controls .switchcontrols,
+html body .battle-controls .shiftcontrols,
+html body .battle-controls .teamcontrols,
+html body .battle-controls .movemenu,
+html body .battle-controls .switchmenu,
+html body .battle-controls .megaevo-box,
+html body .battle-controls > div > p,
+html body .battle-controls > div > p > span {
+  display: contents !important;
+}
+/* the "Attack" / "Switch" headings, line breaks and spacers: not needed in a single line */
+html body .battle-controls .moveselect,
+html body .battle-controls .switchselect,
+html body .battle-controls .shiftselect,
+html body .battle-controls br,
+html body .battle-controls div[style*="clear"] {
+  display: none !important;
+}
+/* "What will Psyduck do?" and "Waiting for opponent...": the words go, the buttons in them (timer, Cancel) stay */
+html body .battle-controls .whatdo {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: var(--ctrl-gap) !important;
+  order: 9 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+}
+html body .battle-controls .whatdo button {
+  font-size: calc(var(--bw, 640px) * var(--ctrl-font) * var(--ui-font-scale)) !important;
+}
+/* the narration in the middle of the line ("Psyduck will use Surf.", "Waiting for opponent..."): gone. Where such a
+   piece of text holds buttons (the replay buttons at the end of a battle), only its words go */
+html body .battle-controls > div > p > small:not(:has(button)),
+html body .battle-controls > div > p > em:not(:has(button)),
+html body .battle-controls > div > p > small > em:not(:has(button)) {
+  display: none !important;
+}
+html body .battle-controls > div > p > small:has(button),
+html body .battle-controls > div > p > em:has(button) {
+  display: contents !important;
+  font-size: 0 !important;
+}
+html body .battle-controls > div > p > small button,
+html body .battle-controls > div > p > em button {
+  font-size: calc(var(--bw, 640px) * var(--ctrl-font) * var(--ui-font-scale)) !important;
+}
+/* every button: in the row, one line of text, no float */
+html body .battle-controls button,
+html body .battle-controls a.button,
+html body .battle-controls .megaevo {
+  float: none !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  /* (a button is 1.9em tall at --ctrl-tall: 1 - one line of 1.3em and 0.3em above and below; taller ones get the extra as padding) */
+  padding: calc((1.9em * var(--ctrl-tall) - 1.3em) / 2) 0.6em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.3 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  text-align: center !important;
+}
+html body .battle-controls button small {
+  display: none !important;                 /* ("(closes this battle)", and a move's type: its colour already says it) */
+}
+/* the Tera / Mega tick box: as small as its words */
+html body .battle-controls .megaevo {
+  flex: 0 0 auto !important;
+  font-size: 0.85em !important;
+  font-weight: normal !important;
+  color: inherit !important;
+  padding: calc((1.9em * var(--ctrl-tall) - 1.3em) / 2 + 0.15em) 0.4em !important;
+}
+html body .battle-controls .megaevo input {
+  margin: 0 0.3em 0 0 !important;
+  vertical-align: middle !important;
+}
+/* moves: share the room that is left; the name, and its PP on a second, smaller line under it (the taller buttons
+   have the room, and the name gets the button's whole width) */
+html body .battle-controls .movemenu button {
+  flex: 1 1 0 !important;
+  position: relative !important;
+  --move-pad: max(0.1em, calc((1.9em * var(--ctrl-tall) - 2.3em) / 2));
+  padding-top: var(--move-pad) !important;
+  padding-bottom: calc(var(--move-pad) + 1em) !important;      /* (room for the PP line, which is placed there) */
+  padding-left: 0.3em !important;
+  padding-right: 0.3em !important;
+  text-overflow: clip !important;      /* (the spaces Showdown leaves after the name would otherwise show as "...") */
+}
+html body .battle-controls .movemenu button small.pp {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: var(--move-pad) !important;
+  float: none !important;
+  padding: 0 !important;
+  font-size: 0.8em !important;
+  line-height: 1.25 !important;
+  text-align: center !important;
+  opacity: 0.8;
+}
+/* switches: the icon only (point at one for its name, HP and moves) */
+html body .battle-controls .switchmenu button {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  width: calc(40px * var(--ik)) !important;
+  height: auto !important;
+  min-height: calc(30px * var(--ik)) !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+}
+html body .battle-controls .switchmenu button .picon {
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  margin: calc(-15px * var(--ik)) 0 0 0 !important;
+  float: none !important;
+  transform: scale(var(--ik)) !important;
+  transform-origin: 0 0 !important;
+  opacity: 1 !important;
+  image-rendering: pixelated;
+}
+
+/* ---------- IS THE RIGHT USERSCRIPT RUNNING? ---------- */
+/* this style and the userscript (showdown-pin-controls) are made as a pair. When the userscript is missing, or is not
+   the version this style was written for, a red note shows in the battle saying so; with the right one it is gone */
+html:not([data-ps-pin="2.36.0"]) body .battle .innerbattle::after {
+  content: "userscript check: this style needs showdown-pin-controls 2.36.0, and that is not what is running (older, or not installed)";
+  position: absolute;
+  left: 6px;
+  top: 70px;
+  max-width: 300px;
+  z-index: 60;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font: 11px/1.3 Verdana, sans-serif;
+  color: #fff;
+  background: rgba(170, 20, 20, 0.9);
+  pointer-events: none;
+}
+
+/* ---------- CAST SHADOWS ---------- */
+/* the userscript keeps a copy of every Pokémon and trainer in this layer, exactly where each is drawn. Here each
+   copy is turned black, laid down from its feet along the map's shadow angle, softened and faded. The layer sits
+   just over the background (level with the opponent's trainer, which is drawn after it), under the weather and
+   the Pokémon. Maths: a point h px above the feet lands h x length px away from them, in the angle's direction.
+   --h (from the userscript) = how far the feet are above the ground: the shadow is put down on the ground and moved
+   along the shadow's direction by that height, so a jumping Pokémon's shadow leaves its feet.
+   --gs (from the userscript) = the slope of the ground under the feet, for Pokémon whose hind feet are drawn higher */
+html body .battle .ps-cast-layer {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+html body .battle .ps-cast {
+  position: absolute !important;
+  margin: 0 !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  image-rendering: pixelated !important;
+  pointer-events: none !important;
+  /* its angle: the opponent's Pokémon's unless one of the rules below says otherwise */
+  --sh-a: var(--sh-angle-foe);
+  /* (the two numbers of the laying-down) */
+  --sh-c: calc(-1 * var(--sh-length) * cos(var(--sh-a)));
+  --sh-d: calc(-1 * var(--sh-length) * sin(var(--sh-a)));
+  /* keeping its width at flat angles. Laid down plainly, a shadow is as wide as its owner times sin(angle), so toward
+     0deg or 180deg it thins to a line. --sh-w0 = that width now (as a part of the owner's width, the ground slope
+     counted in); --sh-need = how much is missing to --cast-min-width; --sh-k = the tilt given to the line under the
+     feet to make up for it (0 while the shadow is wide enough, so nothing changes at steeper angles). Each foot keeps
+     its place left to right. The line is turned about the outer edge of the foot the shadow leaves from (--fl / --fr,
+     from the userscript 2.13: where the feet on the ground start and end), so that foot's shadow starts exactly at it
+     and every other foot's starts a little higher, behind its own leg; no shadow starts in front of a foot.
+     --sh-up = how far that moves the line at the shadow's own anchor (--bw = the owner's width, from the userscript) */
+  --sh-w0: calc(sin(var(--sh-a)) - var(--gs, 0) * cos(var(--sh-a)));
+  --sh-need: max(0, min(0.9, var(--cast-min-width)) - max(var(--sh-w0), -1 * var(--sh-w0)));
+  --sh-k: calc(-1 * clamp(-1, (var(--sh-w0) + 0.00001) * 10000000, 1) * var(--sh-need) * cos(var(--sh-a))
+               / max(cos(var(--sh-a)) * cos(var(--sh-a)), 0.01));
+  --sh-ks: clamp(-1, var(--sh-k) * 10000000, 1);
+  --sh-up: calc(-1 * var(--sh-k) * var(--bw, 0px)
+                * ((var(--fl, var(--fx, 0.5)) - var(--fx, 0.5)) * max(0, -1 * var(--sh-ks))
+                 + (var(--fr, var(--fx, 0.5)) - var(--fx, 0.5)) * max(0, var(--sh-ks))));
+  transform-origin: calc(var(--fx, 0.5) * 100%) calc(var(--fy, 1) * 100%) !important;
+  transform:
+    /* an owner in the air: the shadow is put down on the ground and moved along the shadow's direction by the height */
+    translate(calc(var(--h, 0px) * var(--sh-length) * cos(var(--sh-a))),
+              calc(var(--h, 0px) * (1 + var(--sh-length) * sin(var(--sh-a)))))
+    translate(0px, var(--sh-up))
+    /* laid down from the ground line under its feet; --gs = that line's slope (from the userscript: hind feet higher
+       in the picture than front feet give a sloping line, so the shadow meets all of them; 0 = level ground) */
+    matrix(calc(1 - var(--gs, 0) * var(--sh-c)), calc(var(--gs, 0) * (1 - var(--sh-d)) + var(--sh-k)), var(--sh-c), var(--sh-d), 0, 0)
+    translateX(calc((0.5 - var(--fx, 0.5)) * 100%))      /* (your trainer is mirrored: flipped about the middle of its box) */
+    scaleX(var(--flip, 1))
+    translateX(calc((var(--fx, 0.5) - 0.5) * 100%)) !important;
+  /* --air: 0 on the ground, 1 at --cast-air-height or higher (tan(atan2(a, b)) = a / b as a plain number) */
+  --air: min(1, tan(atan2(var(--h, 0px), var(--cast-air-height))));
+  filter: brightness(0) blur(calc(var(--sh-blur) + var(--cast-air-blur) * var(--air))) !important;
+  opacity: calc(var(--o, 1) * var(--sh-strength) * var(--cast-show) * (1 - (1 - var(--cast-air-strength)) * var(--air))) !important;
+}
+/* (a Pokémon's shadow holds its own copy of the Pokémon's picture, filling the box; userscript 2.40.1) */
+html body .battle .ps-cast > .ps-cast-wrap,
+html body .battle .ps-cast > .ps-cast-wrap > img.ps-cast-pic {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  max-width: none !important;
+  image-rendering: pixelated !important;
+  pointer-events: none !important;
+}
+html body .battle .ps-cast.ps-cast-trainer {
+  opacity: calc(var(--sh-strength) * var(--trainer-show) * var(--cast-show)) !important;
+}
+/* whose shadow it is decides its angle. A Pokémon on its way to the other one (--trav, from the userscript: 0 at
+   home, 1 there) turns from its own side's angle to the other side's */
+html body .battle .ps-cast.ps-cast-foe {
+  --sh-a: calc(var(--sh-angle-foe) + (var(--sh-angle-player) - var(--sh-angle-foe)) * var(--trav, 0) * var(--attack-reach));
+}
+html body .battle .ps-cast.ps-cast-mine {
+  --sh-a: calc(var(--sh-angle-player) + (var(--sh-angle-foe) - var(--sh-angle-player)) * var(--trav, 0) * var(--attack-reach));
+}
+html body .battle .ps-cast.ps-cast-trainer.ps-cast-foe {
+  --sh-a: var(--sh-angle-foe-trainer);
+}
+html body .battle .ps-cast.ps-cast-trainer.ps-cast-mine {
+  --sh-a: var(--sh-angle-player-trainer);
+}
+
+/* ---------- PER-POKÉMON NUDGES ---------- */
+/* positive = right / down, negative = left / up
+   copy a pair of lines for any other Pokémon that sits wrong; use its name in
+   lowercase with no spaces or symbols (e.g. mrmime, farfetchd) */
+
+/* Chinchou: 15 px up on YOUR side, 7 px up on the OPPONENT's side */
+.battle .innerbattle img[src*="/chinchou"][src*="-back"] { translate: 0px -15px !important; }
+.battle .innerbattle img[src*="/chinchou"]:not([src*="-back"]) { translate: 0px -7px !important; }
+
+/* Psyduck: 8 px up on YOUR side, 4 px up on the OPPONENT's side */
+.battle .innerbattle img[src*="/psyduck"][src*="-back"] { translate: 0px -8px !important; }
+.battle .innerbattle img[src*="/psyduck"]:not([src*="-back"]) { translate: 0px -4px !important; }
+
+/* Mienfoo on YOUR side (back sprite): 25 px up (was 10, moved up 15 more) */
+.battle .innerbattle img[src*="/mienfoo"][src*="-back"] { translate: 0px -25px !important; }
+
+/* Mienfoo on the OPPONENT's side (front sprite): 7 px up (was 0) */
+.battle .innerbattle img[src*="/mienfoo"]:not([src*="-back"]) { translate: 0px -7px !important; }
+
+/* (these per-Pokémon fixes are for where they stand in battle; on the team preview screen all twelve line up as
+   Showdown places them, so the fixes are left off there) */
+html body .battle.ps-tp .innerbattle img[src*="/sprites/"] { translate: none !important; }
+
+/* ---------- BATTLE LOG: SAME PIXEL FONT AS THE BATTLE ---------- */
+
+html body .battle-log,
+html body .battle-log *:not(.fa):not([class*="fa-"]):not(i) {   /* icons keep their own font */
+  font-family: var(--log-font), monospace !important;
+  -webkit-font-smoothing: none !important;
+}
+html body .battle-log {
+  font-size: var(--log-size) !important;
+  font-weight: var(--log-weight) !important;
+}
+html body .battle-log .chat,
+html body .battle-log .battle-history,
+html body .battle-log p,
+html body .battle-log div {
+  font-size: inherit !important;
+}
+html body .battle-log small {
+  font-size: 0.85em !important;
+}
+/* "Turn 5" headings */
+html body .battle-log h2,
+html body .battle-log h2.battle-history {
+  font-size: calc(var(--log-size) * 1.35) !important;
+}
+html body .battle-log strong,
+html body .battle-log b {
+  font-weight: 600 !important;
+}
+
+/* ---------- THE ROOM: NO CHAT LOG, THE BATTLE FILLS THE ROOM ---------- */
+/* (the userscript marks the page with data-ps-log / data-ps-chat-line from the settings, and sizes the battle) */
+html[data-ps-log="0"] body .ps-room .battle-log,
+html[data-ps-log="0"] body .ps-room .battle-userlist,
+html[data-ps-log="0"] body .ps-room .battle-chat-toggle {
+  display: none !important;
+}
+/* the line you type chat into: inside the battle, at its lower right corner, just above the line of buttons. (The
+   userscript hands it the battle's place and size: --bx --by --bw --bh, in the room's own px, as it does for the
+   buttons. --ctrl-row is the height of one line of buttons: the chat line stays there whatever the buttons show.)
+   The maximize button sits at its right end */
+html body .ps-room .battle-log-add,
+html body .ps-room > .ps-max-button {
+  --ctrl-row: calc(var(--bw, 640px) * var(--ctrl-font) * var(--ui-font-scale) * 1.9 * var(--ctrl-tall) + 4px);
+}
+html[data-ps-log="0"] body .ps-room .battle-log-add,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log-add {
+  display: block !important;
+  position: absolute !important;
+  left: calc(var(--bx, 0px) + var(--bw, 640px) - var(--ctrl-edge) - var(--bw, 640px) * var(--chat-box-share) - (var(--max-button-size) + 4px) * var(--max-button-show) + var(--chat-box-x)) !important;
+  top: calc(var(--by, 0px) + var(--bh, 360px) - var(--ctrl-edge) - var(--ctrl-row) - var(--chat-box-gap) + var(--chat-box-y)) !important;
+  translate: 0 -100% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: calc(var(--bw, 640px) * var(--chat-box-share)) !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  z-index: 6 !important;
+}
+html[data-ps-log="0"][data-ps-chat-line="0"] body .ps-room .battle-log-add,
+html[data-ps-max="1"][data-ps-chat-line="0"] body .ps-room[data-ps-maxroom] .battle-log-add {
+  display: none !important;
+}
+/* the maximize button (made by the userscript; Alt+M does the same) */
+html body .ps-room > .ps-max-button {
+  position: absolute !important;
+  left: calc(var(--bx, 0px) + var(--bw, 640px) - var(--ctrl-edge) - var(--max-button-size) + var(--chat-box-x)) !important;
+  top: calc(var(--by, 0px) + var(--bh, 360px) - var(--ctrl-edge) - var(--ctrl-row) - var(--chat-box-gap) + var(--chat-box-y)) !important;
+  translate: 0 -100% !important;
+  width: var(--max-button-size) !important;
+  height: var(--max-button-size) !important;
+  margin: 0 !important;
+  padding: 3px !important;
+  box-sizing: border-box !important;
+  z-index: 6 !important;
+  display: block !important;
+  color: #ffffff !important;
+  background: rgba(16, 28, 82, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  opacity: 0.75 !important;
+}
+html body .ps-room > .ps-max-button:hover {
+  opacity: 1 !important;
+}
+html body .ps-room > .ps-max-button svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+html[data-ps-max-button="0"] body .ps-room > .ps-max-button {
+  display: none !important;
+}
+
+/* ---------- THE SPARKLES' CANVASES (made, placed and painted by the userscript) ---------- */
+html body .battle canvas.ps-spark {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform: none !important;
+  scale: none !important;
+  filter: none !important;
+  background: none !important;
+  image-rendering: pixelated !important;
+  pointer-events: none !important;
+}
+/* (each trainer's canvas is stacked where its trainer is: the opponent's behind the Pokémon) */
+html body .battle .rightbar .trainer canvas.ps-spark {
+  z-index: -1 !important;
+  opacity: var(--trainer-show) !important;
+}
+html body .battle .leftbar .trainer canvas.ps-spark {
+  opacity: var(--trainer-show) !important;
+}
+
+/* ---------- SURF'S WAVE (drawn by the userscript) ---------- */
+html body .battle .innerbattle > canvas.ps-surf {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  z-index: 30 !important;
+  pointer-events: none !important;
+  image-rendering: pixelated !important;
+  display: none;
+}
+
+/* ---------- THE SPEED TEST'S RESULT (Alt+Shift+P; Alt+P closes it) ---------- */
+html body #ps-perf {
+  position: fixed !important;
+  left: 4px !important;
+  top: 4px !important;
+  z-index: 2000 !important;
+  padding: 3px 6px !important;
+  font: 11px/1.35 monospace !important;
+  white-space: pre !important;
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  border-radius: 3px !important;
+  pointer-events: none !important;
+}
+
+/* ---------- TALK BUBBLES ---------- */
+/* (the userscript makes them, hands each the place of its trainer's face (--ax, --ay), and draws the shape: one outline
+   round the box and its point (--tipx = how far along the box's bottom edge the tip of the point is)) */
+html body .battle .innerbattle > .ps-bubble {
+  position: absolute !important;
+  left: var(--ax, 0px) !important;
+  top: var(--ay, 0px) !important;
+  z-index: 40 !important;
+  box-sizing: border-box !important;
+  width: max-content !important;
+  max-width: var(--bubble-width) !important;
+  margin: 0 !important;
+  padding: var(--bubble-pad) !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  font-family: var(--bubble-font), monospace !important;
+  font-size: var(--bubble-size) !important;
+  font-weight: var(--ui-font-weight) !important;
+  line-height: 1.25 !important;
+  color: var(--bubble-text-color) !important;
+  background: none !important;
+  border: 0 !important;
+  text-shadow: none !important;
+  -webkit-font-smoothing: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s;
+}
+html body .battle .innerbattle > .ps-bubble.ps-on {
+  opacity: 1 !important;
+}
+/* the shape behind the letters: fill and outline, the point included */
+html body .battle .innerbattle > .ps-bubble > .ps-bubble-shape {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  overflow: visible !important;
+  z-index: -1 !important;
+}
+html body .battle .innerbattle > .ps-bubble > .ps-bubble-shape path {
+  fill: rgba(var(--bubble-color), var(--bubble-opacity)) !important;
+  stroke: var(--bubble-border-color) !important;
+  stroke-width: var(--bubble-border) !important;
+  stroke-linejoin: round !important;
+}
+html body .battle .innerbattle > .ps-bubble > span {
+  position: relative !important;
+}
+/* yours: up and to the right of the face, its point coming down toward the face from its bottom left corner; the
+   opponent's: up and to the left, pointing down from its bottom right corner. Both shake with the level */
+html body .battle .innerbattle > .ps-bubble-mine {
+  scale: var(--bubble-player-scale) !important;
+  transform-origin: var(--tipx, 0px) calc(100% + var(--bubble-tail)) !important;     /* (the tip of its point stays put) */
+  translate: calc(var(--bubble-gap) - var(--tipx, 0px) + var(--bubble-player-x)) calc(-100% - var(--bubble-tail) - var(--bubble-gap) + var(--bubble-player-y) + var(--shake-y, 0px)) !important;
+}
+html body .battle .innerbattle > .ps-bubble-foe {
+  scale: var(--bubble-foe-scale) !important;
+  transform-origin: calc(100% - var(--tipx, 0px)) calc(100% + var(--bubble-tail)) !important;
+  translate: calc(-100% + var(--tipx, 0px) - var(--bubble-gap) + var(--bubble-foe-x)) calc(-100% - var(--bubble-tail) - var(--bubble-gap) + var(--bubble-foe-y) + var(--shake-y, 0px)) !important;
+}
+
+/* ---------- POP-UPS OVER A POKÉMON: BOLD TEXT, NOT BUTTONS ---------- */
+html body .battle .result strong {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-family: var(--ui-font), monospace !important;
+  font-size: var(--result-size) !important;
+  font-weight: 700 !important;
+  -webkit-font-smoothing: none !important;
+  opacity: var(--result-opacity) !important;      /* (Showdown fades the pop-up itself in and out; this is on top of that) */
+  text-shadow:
+     1px  0   0 rgba(var(--result-outline-color), var(--result-outline)),
+    -1px  0   0 rgba(var(--result-outline-color), var(--result-outline)),
+     0    1px 0 rgba(var(--result-outline-color), var(--result-outline)),
+     0   -1px 0 rgba(var(--result-outline-color), var(--result-outline)) !important;
+}
+/* each kind in the colour its button had */
+html body .battle .badresult strong     { color: #CC0000 !important; }
+html body .battle .goodresult strong    { color: #00CC00 !important; }
+html body .battle .neutralresult strong { color: #999999 !important; }
+html body .battle .brnresult strong     { color: #EE5533 !important; }
+html body .battle .psnresult strong     { color: #A4009A !important; }
+html body .battle .slpresult strong     { color: #AA77AA !important; }
+html body .battle .parresult strong     { color: #9AA400 !important; }
+html body .battle .frzresult strong     { color: #009AA4 !important; }
+html body .battle .abilityresult strong { color: #0088AA !important; }
+
+/* ---------- MAXIMIZE BATTLE SCREEN ---------- */
+/* (the userscript marks the page with data-ps-max="1" and the battle's room with data-ps-maxroom while it is on) */
+/* everything that is not the battle's room goes: the top bar with its tabs, and every other panel */
+html[data-ps-max="1"] body #header,
+html[data-ps-max="1"] body .header,
+html[data-ps-max="1"] body .ps-room:not([data-ps-maxroom]) {
+  display: none !important;
+}
+/* the battle's room covers the whole window, black where the battle does not reach */
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: #000000 !important;
+  overflow: hidden !important;
+  z-index: 5 !important;
+}
+/* no log, no user list, whatever --log-show says */
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-log,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-userlist,
+html[data-ps-max="1"] body .ps-room[data-ps-maxroom] .battle-chat-toggle {
+  display: none !important;
+}
+
+}
