@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           Showdown - battle style (main)
 @namespace      dasmins.showdown
-@version        1.1.0
+@version        1.2.0
 @description    Battle layout, sprites, HP bars, buttons and the settings for the animated map rotation. Needs the pin-controls userscript.
 @author         dasmins
 ==/UserStyle== */
@@ -150,6 +150,7 @@
   --surf-sheet-scale: 1;              /* extra size on top of that (1 = as fitted) */
   --surf-sheet-x: 0px;                /* nudge the sheets right (minus = left), in battle px */
   --surf-sheet-y: 0px;                /* nudge the sheets down (minus = up) */
+  --surf-sheet-trainer-delay: 0.1;    /* your Surf: once the wave has gone behind the opponent's Pokémon, it also goes behind the opponent's trainer this many seconds later (-1 = never; needs userscript 2.43 or later) */
   --hover-info: 1;                    /* 1 = pointing at a Pokémon shows its info (also on team preview: types and what is known of its stats), and every tooltip appears centred above what you point at; 0 = Showdown's own */
   --perf-show: 0;                     /* 1 = a speed meter in the tab's title: frames a second, the longest frame, sparkle steps (Alt+P switches it; Alt+Shift+P runs a 9 second speed test and shows its result on the page) */
   --map1-sun-x: 114px;                /* MAP 1 (the tower): where its sun is in the map's 640 x 410 picture, px from the left edge */

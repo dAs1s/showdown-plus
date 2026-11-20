@@ -10,7 +10,7 @@ you can turn moves on and off one at a time. A move without its style on plays a
 
 ## Install
 
-1. The pin-controls userscript, **2.41.0 or later** (2.42.0 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
+1. The pin-controls userscript, **2.41.0 or later** (2.43.0 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
    2.41.0 is the first version that plays Hydro Pump; Surf works from 2.40.
 2. Open each move's `.user.css` above, click *Raw*, and Stylus opens its install page.
 
@@ -24,6 +24,7 @@ Each move has its own, named after it (`--surf-...`, `--hydro-pump-...`):
 - `--surf-speed` / `--hydro-pump-speed`: playback speed (1 = as drawn)
 - `--surf-sheet-fit` / `--hydro-pump-sheet-fit`: 1 = scale and move the sheets so their two standing spots land on the two Pokémon, 0 = exactly as drawn
 - `--...-sheet-scale`, `--...-sheet-x`, `--...-sheet-y`: extra size and nudges
+- `--surf-sheet-trainer-delay: 0.1`: your Surf goes behind the opponent's trainer this many seconds after it goes behind the opponent's Pokémon (-1 = never; userscript 2.43.0 or later)
 
 ## How each move is made
 

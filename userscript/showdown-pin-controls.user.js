@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Showdown - pin controls to battle window
 // @namespace    showdown-custom
-// @version      2.42.0
+// @version      2.43.0
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.
 // @match        https://play.pokemonshowdown.com/*
 // @run-at       document-idle
@@ -2620,6 +2620,23 @@
   }
   // plays a move's sheets (Surf, Hydro Pump); false when that move has none, or they are not loaded yet
   function sheetSurf(scene, sprites) { return sheetMove(scene, sprites, 'surf'); }
+  // the first frame in which the behind layer has water above the far Pokémon's feet (at least 150 of its pixels): the
+  // wave rising behind it. -1 if none (or the sheet can't be read)
+  function behindFrameOf(sh, img) {
+    try {
+      const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0);
+      const d = g.getImageData(0, 0, c.width, c.height).data, W = c.width;
+      const k = sh.fw / sh.stageW, footY = Math.round(sh.far[1] * k);
+      for (let f = 0; f < sh.frames; f++) {
+        const x0 = (f % sh.cols) * sh.fw, y0 = Math.floor(f / sh.cols) * sh.fh;
+        let n = 0;
+        for (let y = y0; y < y0 + footY; y++) for (let x = x0; x < x0 + sh.fw; x++) if (d[(y * W + x) * 4 + 3] > 40) n++;
+        if (n >= 150) return f;
+      }
+    } catch (e) { /* (sheet not readable: no change) */ }
+    return -1;
+  }
   function sheetMove(scene, sprites, prefix) {
     const sh = readSheets(prefix);
     if (!sh) return false;
@@ -2667,13 +2684,30 @@
     host.insertBefore(cvs[1], farBox.nextSibling);           // between the two
     host.insertBefore(cvs[2], nearBox.nextSibling);          // in front of the near Pokémon
     const gs = cvs.map((c) => c.getContext('2d'));
+    // Your attack only: once the wave has gone behind the opponent's Pokémon, its "behind" layer also goes behind the
+    // opponent's trainer, --<move>-sheet-trainer-delay seconds later (0.1 s; below 0 = never). When it goes behind: the
+    // first frame whose behind layer reaches up past the far Pokémon's feet, found in the sheet itself.
+    const tDelay = opt('sheet-trainer-delay', 0.1);
+    let behindAt = -1;
+    if (way === 'out' && tDelay >= 0) {
+      if (sh.behindFrame === undefined) sh.behindFrame = behindFrameOf(sh, L[0].img);
+      if (sh.behindFrame >= 0) behindAt = sh.behindFrame / sh.fps + tDelay;
+    }
+    let tucked = false;
     const clock = () => (window.__psSurfClock ? window.__psSurfClock() : performance.now());
     const t0 = clock(), run = ++surfRun;
     let shown = -1;
     (function step() {
       if (run !== surfRun || !cvs[0].isConnected) { cvs.forEach((c) => c.remove()); return; }
-      const f = Math.floor((clock() - t0) / 1000 * speed * sh.fps);
+      const tNow = (clock() - t0) / 1000 * speed;
+      const f = Math.floor(tNow * sh.fps);
       if (f >= sh.frames) { cvs.forEach((c) => c.remove()); return; }
+      if (behindAt >= 0 && !tucked && tNow >= behindAt) {
+        // (below the opponent's trainer, which the style draws at -1 just over the background: at the same level but
+        // earlier on the page, the trainer covers it; still above the background and the shadows)
+        cvs[0].style.setProperty('z-index', '-1');
+        tucked = true;
+      }
       if (f !== shown && f >= 0) {
         shown = f;
         const sx = (f % sh.cols) * sh.fw, sy = Math.floor(f / sh.cols) * sh.fh;
