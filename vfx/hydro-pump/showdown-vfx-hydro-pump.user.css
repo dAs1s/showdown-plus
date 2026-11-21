@@ -1,8 +1,11 @@
 /* ==UserStyle==
 @name           Showdown Plus - VFX - Hydro Pump
 @namespace      dasmins.showdown.vfx
-@version        1.1.0
+@version        1.1.1
 @description    Hydro Pump plays these hand-made sprite sheets. Needs the pin-controls userscript 2.41.0 or later.
+@homepageURL    https://github.com/dAs1s/showdown-plus
+@supportURL     https://github.com/dAs1s/showdown-plus/issues
+@updateURL      https://raw.githubusercontent.com/dAs1s/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css
 @author         dasmins
 ==/UserStyle== */
 @-moz-document domain("play.pokemonshowdown.com") {

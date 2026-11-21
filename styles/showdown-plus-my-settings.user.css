@@ -1,0 +1,28 @@
+/* ==UserStyle==
+@name           Showdown Plus - my settings
+@namespace      dasmins.showdown.mysettings
+@version        1.0.0
+@description    Your own Showdown Plus settings. Updates never touch this style, so your numbers stay put.
+@author         you
+==/UserStyle== */
+/* HOW TO USE
+   Don't install this from its link: paste it into Stylus yourself (Manage > Write new style, paste, Save), so it is
+   never auto-updated. Then copy any setting you want to change from the main style's SETTINGS block into the first
+   block below and change it there. Whatever is here wins over the main style and the maps, and survives their updates.
+   Leave the main style and the maps unedited, or your edits are lost when they update. */
+@-moz-document domain("play.pokemonshowdown.com") {
+
+  /* everything in the main style's SETTINGS block (and each map's slot switch, --map-N-on: 0 hides a map)
+     Examples (delete the comment marks around a line to use it): */
+  html:root:root {
+    /* --bg-zoom: 1.1; */
+    /* --map-pick: 0; */
+    /* --result-time: 4; */
+    /* --surf-sheet-trainer-delay: 0.1; */
+  }
+
+  /* one map's own numbers: copy a line from that map's "THIS MAP'S OWN NUMBERS" block, set N to its slot */
+  /* html:root:root body .battle[data-ps-map="5"][data-ps-map] {
+    --bg-zoom: 1;
+  } */
+}
