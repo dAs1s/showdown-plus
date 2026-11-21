@@ -40,7 +40,14 @@ All settings are at the top of the main style, in its SETTINGS block:
 ## The maps
 
 Each map is a 320x205 pixel-art loop, 200 frames at 10 frames a second (20 seconds), shown at 640x410 with sharp
-pixels. The GIFs on their own are in [`gifs-320x205/`](gifs-320x205).
+pixels. Maps 2-20 are stored in their styles as lossless animated WebP (the same pixels as the GIFs, about 28%
+smaller); the tower stays a GIF, since the userscript times its serpent from it. The GIFs on their own are in
+[`gifs-320x205/`](gifs-320x205).
+
+A map that is turned off in Stylus doesn't load at all, so keeping only the maps you want also keeps Showdown light.
+Style sizes: the lava maps are the heaviest (0.9-1.2 MB each, the whole floor moves), the ruins the lightest (0.2-0.4 MB).
+
+The scripts that made the maps are in [`tools/`](tools) (see [`tools/README.md`](tools/README.md)).
 
 | Slot | Map | Preview |
 |---|---|---|

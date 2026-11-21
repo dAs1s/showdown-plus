@@ -8,6 +8,10 @@ you can turn moves on and off one at a time. A move without its style on plays a
 | Surf | [`surf/showdown-vfx-surf.user.css`](surf/showdown-vfx-surf.user.css) | 72 at 20 fps | 3.6 s |
 | Hydro Pump | [`hydro-pump/showdown-vfx-hydro-pump.user.css`](hydro-pump/showdown-vfx-hydro-pump.user.css) | 59 at 20 fps | 2.95 s |
 
+Since version 1.1.0 the sheets are stored as lossless WebP reduced to 256 colours: Surf's style went from 1,983 KB to
+657 KB, Hydro Pump's from 856 KB to 231 KB, with no visible difference (at most a few faint foam-edge pixels change).
+The PNG sheets in each move's `sheets/` folder are still the full originals, and `vfx-v1` keeps the PNG styles.
+
 ## Install
 
 1. The pin-controls userscript, **2.41.0 or later** (2.43.0 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
