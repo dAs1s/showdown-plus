@@ -1,4 +1,4 @@
-# Showdown VFX mod
+# Showdown Plus: VFX
 
 Hand-made move animations for Pokémon Showdown, played from sprite sheets. Each move is its own Stylus style, so
 you can turn moves on and off one at a time. A move without its style on plays as before.

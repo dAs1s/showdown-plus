@@ -1,7 +1,8 @@
-# Showdown animated battle backgrounds
+# Showdown Plus
 
-Animated backgrounds for [Pokémon Showdown](https://play.pokemonshowdown.com) battles, with a battle style and a
-userscript that go with them. Every battle gets one of the installed maps at random.
+A visual mod for [Pokémon Showdown](https://play.pokemonshowdown.com) battles: animated pixel-art battle backgrounds,
+hand-made move animations (VFX), and a battle style and userscript that go with them. Every battle gets one of the
+installed maps at random.
 
 ## What you need
 
@@ -18,8 +19,9 @@ userscript that go with them. Every battle gets one of the installed maps at ran
    turn single maps on and off in Stylus. Install as many as you like (up to 20); each battle picks one of the ones
    that are on.
 
-If you had older map styles installed, turn them off first: maps share slot numbers, and two styles in the same slot
-draw over each other.
+If you had older versions installed (names starting "Showdown - ..." or "Showdown VFX - ...", and the userscript
+"Showdown - pin controls to battle window"), remove them first. Two map styles in the same slot draw over each other,
+and two copies of the userscript would both run.
 
 The main style shows a small red note in the battle if the userscript is missing or is the wrong version.
 

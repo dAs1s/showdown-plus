@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Showdown - pin controls to battle window
+// @name         Showdown Plus - pin controls
 // @namespace    showdown-custom
 // @version      2.43.0
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.

@@ -67,7 +67,7 @@ b64 = base64.b64encode(data).decode()
 N = str(slot)
 sel = 'html:root body .battle[data-ps-map="%s"][data-ps-map]' % N
 css = '''/* ==========================================================================
-   Showdown - map %(N)s: %(name)s
+   Showdown Plus - map %(N)s: %(name)s
    A separate Stylus style: one map of your rotation. Turn it off in Stylus to take this map out.
    ========================================================================== */
 @-moz-document domain("play.pokemonshowdown.com") {
@@ -170,7 +170,7 @@ css = '''/* ====================================================================
 open(out, 'w', encoding='utf-8', newline='\n').write(css)
 if '--usercss' in sys.argv:                  # the same style with a header, so Stylus installs it directly
     hdr = '''/* ==UserStyle==
-@name           Showdown - map %s: %s
+@name           Showdown Plus - map %s: %s
 @namespace      dasmins.showdown.maps
 @version        %s
 @description    One animated map of the battle background rotation (slot %s).
