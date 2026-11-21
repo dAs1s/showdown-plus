@@ -1,12 +1,12 @@
-"""Pack a finished 700x500 battle background GIF as one map of the user's Showdown style.
+"""Pack a finished 700x500 battle background GIF as one map of the Showdown battle style.
 
     python make_map_css640.py <gif> <out.css> <name> --slot=N [--smooth] [--webp] [--usercss]
 
-The user's battle window shows x 50-690, y 40-450 of Showdown's 700x500 backdrop, so the GIF is cut to that 640x410. New 640x410 pictures are used whole (no crop); a 320x205 GIF is stored as is.
+The battle window shows x 50-690, y 40-450 of Showdown's 700x500 backdrop, so the GIF is cut to that 640x410. New 640x410 pictures are used whole (no crop); a 320x205 GIF is stored as is.
 Pixel art (2x2 blocks) is stored at half size (320x205) and drawn at 2x with sharp pixels; --smooth (a painting) is
 stored at 640x410 and drawn as is. Every frame is checked against the input. The file names its slot (--map-N-on),
 applies only to battles marked with it, and has a block for this map's own numbers (all left to the main style
-until the user turns one on)."""
+until you turn one on)."""
 import sys, io, base64
 import numpy as np
 from PIL import Image, ImageSequence

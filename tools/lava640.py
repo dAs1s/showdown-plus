@@ -1,6 +1,6 @@
 """
 The lava for beach640.py's lava scenes: a rebuild of lava.py (the animator behind old map 2, lava4),
-made from the settings tuned with the user in that chat. lava.py itself was not kept.
+made from lava.py's tuned settings (lava.py itself was not kept).
 
 What it does, per frame:
   - the lava is re-drawn from a heat map (how hot each pixel is, from the painting's own brightness) through a
@@ -10,7 +10,7 @@ What it does, per frame:
   - dark crust lines (wavy streaks) form, drift with the flow and break up on the rivers; on the pools,
     curved crust forms and unforms as it rides the swirl (kept light: the front lava had too much black);
   - bubbles on the pools: lava.py's own bubble code (its last version, lava_v32 / lava4), recovered line by
-    line from the old chat and ported: a low dome (round top, flat foot) swells for 3.6 s, coloured yellow on top,
+    line and ported: a low dome (round top, flat foot) swells for 3.6 s, coloured yellow on top,
     orange through the middle, red low down, varied by the lava it mirrors, with a dark band at its foot, a glow
     spot and a 1-2 px shine near its top and a thin broken outline; it pops in 0.8 s (a flash, torn skin), heavy
     gobs of lava tear off 4/5 of the way up, just reach its peak and drop a little outside; it leaves a ring of
@@ -33,7 +33,7 @@ CRUST = dict(length=(8.0, 22.0), width=(1.0, 1.7), wobble=(0.5, 1.4), wave=(6.0,
 CRUST_LIFE_CYCLES = 4     # a line forms and breaks up this many times a loop
 POOL_CRUST = 70           # dark crust patches per 10,000 px^2 of pool, swirling with it
 POOL_CRUST_DARK = 0.6     # (lighter than the first try: the front lava had too much black)
-# bubbles: lava.py's own settings as the user left them (lava2/lava4), in its units (px of the battle
+# bubbles: lava.py's own final settings (lava2/lava4), in its units (px of the battle
 # picture, frames at 10 fps; FRAMES=200 a loop)
 FRAMES = 200
 B = dict(FRAMES=(36, 8), SQUASH=3.0, HEIGHT=0.82, EASE_POWER=2.2, GLOW=0.42, OPACITY=0.92, REFLECT=0.45,
