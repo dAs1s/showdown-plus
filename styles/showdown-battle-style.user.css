@@ -1,11 +1,11 @@
 /* ==UserStyle==
 @name           Showdown Plus - battle style (main)
 @namespace      dasmins.showdown
-@version        1.2.1
+@version        1.2.2
 @description    Battle layout, sprites, HP bars, buttons and the settings for the animated map rotation. Needs the pin-controls userscript.
-@homepageURL    https://github.com/dAs1s/showdown-plus
-@supportURL     https://github.com/dAs1s/showdown-plus/issues
-@updateURL      https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/showdown-battle-style.user.css
+@homepageURL    https://github.com/dasmins/showdown-plus
+@supportURL     https://github.com/dasmins/showdown-plus/issues
+@updateURL      https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/showdown-battle-style.user.css
 @author         dasmins
 ==/UserStyle== */
 @-moz-document domain("play.pokemonshowdown.com") {

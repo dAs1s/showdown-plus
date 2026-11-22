@@ -14,7 +14,7 @@ The PNG sheets in each move's `sheets/` folder are still the full originals, and
 
 ## Install
 
-1. The pin-controls userscript, **2.41.0 or later** (2.43.1 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
+1. The pin-controls userscript, **2.41.0 or later** (2.43.2 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
    2.41.0 is the first version that plays Hydro Pump; Surf works from 2.40.
 2. Open each move's `.user.css` above, click *Raw*, and Stylus opens its install page.
 

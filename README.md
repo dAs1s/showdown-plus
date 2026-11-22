@@ -14,13 +14,13 @@ installed maps at random.
 Click each link below: your userscript manager or Stylus opens its install page. Installed this way, everything
 updates itself (see [Updates](#updates)).
 
-1. **Userscript:** [install](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/userscript/showdown-pin-controls.user.js)
-2. **Main style:** [install](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/showdown-battle-style.user.css)
+1. **Userscript:** [install](https://raw.githubusercontent.com/dasmins/showdown-plus/main/userscript/showdown-pin-controls.user.js)
+2. **Main style:** [install](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/showdown-battle-style.user.css)
 3. **Maps:** install the ones you want from the table under [The maps](#the-maps). Each map is its own style, so you
    can turn single maps on and off in Stylus; each battle picks one of the ones that are on. A map that is off
    doesn't load at all.
-4. **VFX (optional):** [Surf](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/vfx/surf/showdown-vfx-surf.user.css),
-   [Hydro Pump](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css)
+4. **VFX (optional):** [Surf](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/surf/showdown-vfx-surf.user.css),
+   [Hydro Pump](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css)
 5. **Your settings:** open [`styles/showdown-plus-my-settings.user.css`](styles/showdown-plus-my-settings.user.css),
    copy all of it, and in Stylus choose *Manage* > *Write new style*, paste, and save. Don't install this one from a
    link: pasted in, it never updates, so your numbers are never overwritten.
@@ -71,23 +71,23 @@ The scripts that made the maps are in [`tools/`](tools) (see [`tools/README.md`]
 
 | Slot | Map (click to install) | Preview |
 |---|---|---|
-| 1 | [tower3 serpent](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map01-tower3-serpent.user.css) | <img src="previews/map01-tower3-serpent.png" width="240"> |
-| 2 | [autumn forest clearing](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map02-autumn-forest-clearing.user.css) | <img src="previews/map02-autumn-forest-clearing.png" width="240"> |
-| 3 | [autumn ruined courtyard](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map03-autumn-ruined-courtyard.user.css) | <img src="previews/map03-autumn-ruined-courtyard.png" width="240"> |
-| 4 | [blue hour shipwreck dunes](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map04-blue-hour-shipwreck-dunes.user.css) | <img src="previews/map04-blue-hour-shipwreck-dunes.png" width="240"> |
-| 5 | [dawn shipwreck headland](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map05-dawn-shipwreck-headland.user.css) | <img src="previews/map05-dawn-shipwreck-headland.png" width="240"> |
-| 6 | [erupting volcanoes basalt outcrop 10](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map06-erupting-volcanoes-basalt-outcrop-10.user.css) | <img src="previews/map06-erupting-volcanoes-basalt-outcrop-10.png" width="240"> |
-| 7 | [golden hour shipwreck](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map07-golden-hour-shipwreck.user.css) | <img src="previews/map07-golden-hour-shipwreck.png" width="240"> |
-| 8 | [lava battle floor stone arch 04](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map08-lava-battle-floor-stone-arch-04.user.css) | <img src="previews/map08-lava-battle-floor-stone-arch-04.png" width="240"> |
-| 9 | [lava cavern basalt outcrop 08](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map09-lava-cavern-basalt-outcrop-08.user.css) | <img src="previews/map09-lava-cavern-basalt-outcrop-08.png" width="240"> |
-| 10 | [misty shipwreck](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map10-misty-shipwreck.user.css) | <img src="previews/map10-misty-shipwreck.png" width="240"> |
-| 11 | [moonlit desert oasis](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map11-moonlit-desert-oasis.user.css) | <img src="previews/map11-moonlit-desert-oasis.png" width="240"> |
-| 12 | [moonlit lava mountains outcrop 07](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map12-moonlit-lava-mountains-outcrop-07.user.css) | <img src="previews/map12-moonlit-lava-mountains-outcrop-07.png" width="240"> |
-| 13 | [moonlit shipwreck shore](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map13-moonlit-shipwreck-shore.user.css) | <img src="previews/map13-moonlit-shipwreck-shore.png" width="240"> |
-| 14 | [moonlit willow marsh](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map14-moonlit-willow-marsh.user.css) | <img src="previews/map14-moonlit-willow-marsh.png" width="240"> |
-| 15 | [rain washed ruins](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map15-rain-washed-ruins.user.css) | <img src="previews/map15-rain-washed-ruins.png" width="240"> |
-| 16 | [rose cliff shipwreck shore](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map16-rose-cliff-shipwreck-shore.user.css) | <img src="previews/map16-rose-cliff-shipwreck-shore.png" width="240"> |
-| 17 | [snowy ruins lavender dawn](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map17-snowy-ruins-lavender-dawn.user.css) | <img src="previews/map17-snowy-ruins-lavender-dawn.png" width="240"> |
-| 18 | [stormlit basalt beach](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map18-stormlit-basalt-beach.user.css) | <img src="previews/map18-stormlit-basalt-beach.png" width="240"> |
-| 19 | [volcanic arena orange sun](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map19-volcanic-arena-orange-sun.user.css) | <img src="previews/map19-volcanic-arena-orange-sun.png" width="240"> |
-| 20 | [waterfall beach](https://raw.githubusercontent.com/dAs1s/showdown-plus/main/styles/maps/map20-waterfall-beach.user.css) | <img src="previews/map20-waterfall-beach.png" width="240"> |
+| 1 | [tower3 serpent](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map01-tower3-serpent.user.css) | <img src="previews/map01-tower3-serpent.png" width="240"> |
+| 2 | [autumn forest clearing](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map02-autumn-forest-clearing.user.css) | <img src="previews/map02-autumn-forest-clearing.png" width="240"> |
+| 3 | [autumn ruined courtyard](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map03-autumn-ruined-courtyard.user.css) | <img src="previews/map03-autumn-ruined-courtyard.png" width="240"> |
+| 4 | [blue hour shipwreck dunes](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map04-blue-hour-shipwreck-dunes.user.css) | <img src="previews/map04-blue-hour-shipwreck-dunes.png" width="240"> |
+| 5 | [dawn shipwreck headland](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map05-dawn-shipwreck-headland.user.css) | <img src="previews/map05-dawn-shipwreck-headland.png" width="240"> |
+| 6 | [erupting volcanoes basalt outcrop 10](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map06-erupting-volcanoes-basalt-outcrop-10.user.css) | <img src="previews/map06-erupting-volcanoes-basalt-outcrop-10.png" width="240"> |
+| 7 | [golden hour shipwreck](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map07-golden-hour-shipwreck.user.css) | <img src="previews/map07-golden-hour-shipwreck.png" width="240"> |
+| 8 | [lava battle floor stone arch 04](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map08-lava-battle-floor-stone-arch-04.user.css) | <img src="previews/map08-lava-battle-floor-stone-arch-04.png" width="240"> |
+| 9 | [lava cavern basalt outcrop 08](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map09-lava-cavern-basalt-outcrop-08.user.css) | <img src="previews/map09-lava-cavern-basalt-outcrop-08.png" width="240"> |
+| 10 | [misty shipwreck](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map10-misty-shipwreck.user.css) | <img src="previews/map10-misty-shipwreck.png" width="240"> |
+| 11 | [moonlit desert oasis](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map11-moonlit-desert-oasis.user.css) | <img src="previews/map11-moonlit-desert-oasis.png" width="240"> |
+| 12 | [moonlit lava mountains outcrop 07](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map12-moonlit-lava-mountains-outcrop-07.user.css) | <img src="previews/map12-moonlit-lava-mountains-outcrop-07.png" width="240"> |
+| 13 | [moonlit shipwreck shore](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map13-moonlit-shipwreck-shore.user.css) | <img src="previews/map13-moonlit-shipwreck-shore.png" width="240"> |
+| 14 | [moonlit willow marsh](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map14-moonlit-willow-marsh.user.css) | <img src="previews/map14-moonlit-willow-marsh.png" width="240"> |
+| 15 | [rain washed ruins](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map15-rain-washed-ruins.user.css) | <img src="previews/map15-rain-washed-ruins.png" width="240"> |
+| 16 | [rose cliff shipwreck shore](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map16-rose-cliff-shipwreck-shore.user.css) | <img src="previews/map16-rose-cliff-shipwreck-shore.png" width="240"> |
+| 17 | [snowy ruins lavender dawn](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map17-snowy-ruins-lavender-dawn.user.css) | <img src="previews/map17-snowy-ruins-lavender-dawn.png" width="240"> |
+| 18 | [stormlit basalt beach](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map18-stormlit-basalt-beach.user.css) | <img src="previews/map18-stormlit-basalt-beach.png" width="240"> |
+| 19 | [volcanic arena orange sun](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map19-volcanic-arena-orange-sun.user.css) | <img src="previews/map19-volcanic-arena-orange-sun.png" width="240"> |
+| 20 | [waterfall beach](https://raw.githubusercontent.com/dasmins/showdown-plus/main/styles/maps/map20-waterfall-beach.user.css) | <img src="previews/map20-waterfall-beach.png" width="240"> |

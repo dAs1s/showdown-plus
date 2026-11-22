@@ -12,7 +12,7 @@ Exits with an error if anything fails.
 """
 import base64, binascii, glob, re, subprocess, sys
 
-RAW = 'https://raw.githubusercontent.com/dAs1s/showdown-plus/main/'
+RAW = 'https://raw.githubusercontent.com/dasmins/showdown-plus/main/'
 SETTINGS = 'styles/showdown-plus-my-settings.user.css'
 MAGIC = {'gif': b'GIF8', 'png': b'\x89PNG', 'webp': b'RIFF'}
 errors, warnings = [], []

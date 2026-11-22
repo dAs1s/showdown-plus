@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Showdown Plus - pin controls
 // @namespace    showdown-custom
-// @version      2.43.1
+// @version      2.43.2
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.
-// @homepageURL  https://github.com/dAs1s/showdown-plus
-// @supportURL   https://github.com/dAs1s/showdown-plus/issues
-// @updateURL    https://raw.githubusercontent.com/dAs1s/showdown-plus/main/userscript/showdown-pin-controls.user.js
-// @downloadURL  https://raw.githubusercontent.com/dAs1s/showdown-plus/main/userscript/showdown-pin-controls.user.js
+// @homepageURL  https://github.com/dasmins/showdown-plus
+// @supportURL   https://github.com/dasmins/showdown-plus/issues
+// @updateURL    https://raw.githubusercontent.com/dasmins/showdown-plus/main/userscript/showdown-pin-controls.user.js
+// @downloadURL  https://raw.githubusercontent.com/dasmins/showdown-plus/main/userscript/showdown-pin-controls.user.js
 // @match        https://play.pokemonshowdown.com/*
 // @run-at       document-idle
 // @grant        none
