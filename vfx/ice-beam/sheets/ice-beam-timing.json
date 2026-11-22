@@ -1,0 +1,55 @@
+{
+  "spriteFrame": {
+    "width": 320,
+    "height": 205
+  },
+  "previewStage": {
+    "width": 640,
+    "height": 410
+  },
+  "displayScale": 2,
+  "sampling": "nearest",
+  "framesPerSecond": 20,
+  "frameDurationMs": 50,
+  "frameCount": 65,
+  "durationMs": 3250,
+  "loop": false,
+  "atlas": {
+    "columns": 8,
+    "rows": 9,
+    "order": "row-major"
+  },
+  "anchor": {
+    "x": 0,
+    "y": 0
+  },
+  "beatsMs": {
+    "chargeStarts": 50,
+    "beamStarts": 450,
+    "targetImpact": 630,
+    "emissionEnds": 1550,
+    "lastBeamHits": 1730,
+    "iceShatters": 2150,
+    "fragmentsClearBy": 3065
+  },
+  "crystalClusterCount": 4,
+  "crystalsPerCluster": 8,
+  "compositingOrder": [
+    "stage",
+    "behind",
+    "far battler",
+    "between",
+    "near battler",
+    "front"
+  ],
+  "playerAttack": {
+    "behind": "ice-beam-outgoing-behind.png",
+    "between": "ice-beam-outgoing-between.png",
+    "front": "ice-beam-outgoing-front.png"
+  },
+  "opponentAttack": {
+    "behind": "ice-beam-incoming-behind.png",
+    "between": "ice-beam-incoming-between.png",
+    "front": "ice-beam-incoming-front.png"
+  }
+}

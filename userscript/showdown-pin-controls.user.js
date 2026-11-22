@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Showdown Plus - pin controls
 // @namespace    showdown-custom
-// @version      2.43.2
+// @version      2.44.0
 // @description  Measures the battle window for the Stylus style (controls stay in place at any zoom), adds a pixelate filter for the background/weather, and finds each Pokémon's feet so its shadow sits right under it.
 // @homepageURL  https://github.com/dasmins/showdown-plus
 // @supportURL   https://github.com/dasmins/showdown-plus/issues
@@ -2590,7 +2590,7 @@
   // were drawn for a window with the Pokémon standing at set spots; the frames are scaled and moved (never rotated)
   // so those spots land where the two Pokémon really stand (--surf-sheet-fit: 0 draws them exactly as rendered).
   const sheetImgs = new Map();
-  const sheetCaches = {};            // move prefix ('surf', 'hydro-pump') -> its sheets, once read
+  const sheetCaches = {};            // move prefix ('surf', 'hydro-pump', 'ice-beam') -> its sheets, once read
   function sheetImage(url) {
     let e = sheetImgs.get(url);
     if (!e) {
@@ -2722,26 +2722,33 @@
     return true;
   }
 
-  let surfRun = 0, surfOriginal = null, sheetTry = -1e9, hydroOriginal = null;
+  let surfRun = 0, surfOriginal = null, sheetTry = -1e9;
   const sheetReady = (p) => !!(sheetCaches[p] && Object.values(sheetCaches[p].set).every((e) => e.ok));
-  // Hydro Pump: its sheets when its VFX style is on (and loaded); Showdown's own otherwise
-  function hydroAnim(scene, sprites) {
-    try { if (sheetMove(scene, sprites, 'hydro-pump')) return; } catch (e) { /* (Showdown's own instead) */ }
-    return hydroOriginal.apply(this, arguments);
+  // The other VFX moves: Showdown's move id -> the prefix of its style's settings and sheets. Each plays its sheets
+  // when its VFX style is on (and loaded), Showdown's own otherwise. A new move only needs a line here.
+  const SHEET_MOVES = { hydropump: 'hydro-pump', icebeam: 'ice-beam' };
+  const sheetOriginals = {}, sheetAnims = {};
+  function sheetAnimFor(id) {
+    return sheetAnims[id] || (sheetAnims[id] = function (scene, sprites) {
+      try { if (sheetMove(scene, sprites, SHEET_MOVES[id])) return; } catch (e) { /* (Showdown's own instead) */ }
+      return sheetOriginals[id].apply(this, arguments);
+    });
   }
   function hookSurf() {
     const M = window.BattleMoveAnims;
     if (!M || !M.surf) return;
+    const prefixes = ['surf'].concat(Object.values(SHEET_MOVES));
     const now = performance.now();                 // (looks for the sheets every 2 s until they are loaded)
-    if (now - sheetTry > 2000 && !(sheetReady('surf') && sheetReady('hydro-pump'))) { sheetTry = now; safely(() => readSheets('surf')); safely(() => readSheets('hydro-pump')); }
+    if (now - sheetTry > 2000 && !prefixes.every(sheetReady)) { sheetTry = now; prefixes.forEach((p) => safely(() => readSheets(p))); }
     if (!surfOriginal) surfOriginal = M.surf.anim;
     const want = readNumber('--surf-custom', 1) > 0;
     const anim = want ? surfAnim : surfOriginal;
     if (M.surf.anim !== anim) M.surf.anim = anim;
-    if (M.hydropump) {
-      if (!hydroOriginal) hydroOriginal = M.hydropump.anim;
-      const hy = readSheets('hydro-pump') ? hydroAnim : hydroOriginal;
-      if (M.hydropump.anim !== hy) M.hydropump.anim = hy;
+    for (const id in SHEET_MOVES) {
+      if (!M[id]) continue;
+      if (!sheetOriginals[id]) sheetOriginals[id] = M[id].anim;
+      const a = readSheets(SHEET_MOVES[id]) ? sheetAnimFor(id) : sheetOriginals[id];
+      if (M[id].anim !== a) M[id].anim = a;
     }
   }
 

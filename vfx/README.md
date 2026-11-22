@@ -7,26 +7,29 @@ you can turn moves on and off one at a time. A move without its style on plays a
 |---|---|---|---|
 | Surf | [`surf/showdown-vfx-surf.user.css`](surf/showdown-vfx-surf.user.css) | 72 at 20 fps | 3.6 s |
 | Hydro Pump | [`hydro-pump/showdown-vfx-hydro-pump.user.css`](hydro-pump/showdown-vfx-hydro-pump.user.css) | 59 at 20 fps | 2.95 s |
+| Ice Beam | [`ice-beam/showdown-vfx-ice-beam.user.css`](ice-beam/showdown-vfx-ice-beam.user.css) | 65 at 20 fps | 3.25 s |
 
-Since version 1.1.0 the sheets are stored as lossless WebP reduced to 256 colours: Surf's style went from 1,983 KB to
-657 KB, Hydro Pump's from 856 KB to 231 KB, with no visible difference (at most a few faint foam-edge pixels change).
+The sheets are stored as lossless WebP reduced to 256 colours: Surf's style went from 1,983 KB to 657 KB, Hydro
+Pump's from 856 KB to 231 KB, with no visible difference (at most a few faint edge pixels change). Ice Beam is 504 KB.
 The PNG sheets in each move's `sheets/` folder are still the full originals, and `vfx-v1` keeps the PNG styles.
 
 ## Install
 
-1. The pin-controls userscript, **2.41.0 or later** (2.43.2 is current) ([`userscript/showdown-pin-controls.user.js`](../userscript/showdown-pin-controls.user.js)).
-   2.41.0 is the first version that plays Hydro Pump; Surf works from 2.40.
-2. Open each move's `.user.css` above, click *Raw*, and Stylus opens its install page.
+1. The pin-controls userscript, **2.44.0 or later** ([install](https://raw.githubusercontent.com/dasmins/showdown-plus/main/userscript/showdown-pin-controls.user.js)).
+   2.44.0 is the first version that plays Ice Beam; Hydro Pump works from 2.41, Surf from 2.40.
+2. Install each move you want: [Surf](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/surf/showdown-vfx-surf.user.css),
+   [Hydro Pump](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css),
+   [Ice Beam](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/ice-beam/showdown-vfx-ice-beam.user.css). Each opens Stylus's install page.
 
 If you had the older "Showdown - Surf sheets" style installed, turn it off: both set Surf's sheets.
 
 ## Settings (optional: put them in your *Showdown Plus - my settings* style)
 
-Each move has its own, named after it (`--surf-...`, `--hydro-pump-...`):
+Each move has its own, named after it (`--surf-...`, `--hydro-pump-...`, `--ice-beam-...`):
 
-- `--surf-sheets: 1` / `--hydro-pump-sheets: 1`: 0 plays Showdown's own animation instead
-- `--surf-speed` / `--hydro-pump-speed`: playback speed (1 = as drawn)
-- `--surf-sheet-fit` / `--hydro-pump-sheet-fit`: 1 = scale and move the sheets so their two standing spots land on the two Pokémon, 0 = exactly as drawn
+- `--surf-sheets: 1` / `--hydro-pump-sheets: 1` / `--ice-beam-sheets: 1`: 0 plays Showdown's own animation instead
+- `--surf-speed` / `--hydro-pump-speed` / `--ice-beam-speed`: playback speed (1 = as drawn)
+- `--surf-sheet-fit` / `--hydro-pump-sheet-fit` / `--ice-beam-sheet-fit`: 1 = scale and move the sheets so their two standing spots land on the two Pokémon, 0 = exactly as drawn
 - `--...-sheet-scale`, `--...-sheet-x`, `--...-sheet-y`: extra size and nudges
 - `--surf-sheet-trainer-delay: 0.1`: your Surf goes behind the opponent's trainer this many seconds after it goes behind the opponent's Pokémon (-1 = never; userscript 2.43.0 or later)
 
@@ -43,12 +46,18 @@ Each move's folder has:
 - `source/`: the render scripts and their controls, to change and render it again
 - `EDITING.md`: what the controls do and how to render
 
+To pack a move's sheets into its style (256 colours, lossless WebP, header and update link):
+`python tools/pack_vfx.py ice-beam "Ice Beam" vfx/ice-beam/sheets --version 1.0.1` (raise the version every time).
+A new move also needs one line in the userscript's `SHEET_MOVES` list (Showdown's move id and the prefix).
+
 ## Versions
 
 Each saved version is tagged, so an earlier one can always be restored:
 
 - `surf-v1`: the first Surf (45 frames), also kept in [`surf/archive/v1/`](surf/archive/v1)
 - `vfx-v1`: Surf with the farther shared travel (72 frames) and the first Hydro Pump
+- `vfx-v2`: both at 256 colours, lossless WebP
+- `vfx-v3`: adds the first Ice Beam
 
 To restore a move: on GitHub pick the tag in the branch menu and download its files, or run
 `git checkout <tag> -- vfx/<move>`.

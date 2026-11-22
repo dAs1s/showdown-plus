@@ -20,7 +20,8 @@ updates itself (see [Updates](#updates)).
    can turn single maps on and off in Stylus; each battle picks one of the ones that are on. A map that is off
    doesn't load at all.
 4. **VFX (optional):** [Surf](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/surf/showdown-vfx-surf.user.css),
-   [Hydro Pump](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css)
+   [Hydro Pump](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/hydro-pump/showdown-vfx-hydro-pump.user.css),
+   [Ice Beam](https://raw.githubusercontent.com/dasmins/showdown-plus/main/vfx/ice-beam/showdown-vfx-ice-beam.user.css)
 5. **Your settings:** open [`styles/showdown-plus-my-settings.user.css`](styles/showdown-plus-my-settings.user.css),
    copy all of it, and in Stylus choose *Manage* > *Write new style*, paste, and save. Don't install this one from a
    link: pasted in, it never updates, so your numbers are never overwritten.
@@ -43,10 +44,10 @@ An update replaces the whole style, so **don't edit the main style or the maps**
 
 The main style shows a small red note in the battle if the userscript is missing or is the wrong version.
 
-## VFX mod: Surf and Hydro Pump
+## VFX mod: Surf, Hydro Pump and Ice Beam
 
-[`vfx/`](vfx) has hand-made move animations, each its own Stylus style: Surf and Hydro Pump. They need the userscript
-2.41.0 or later. See [`vfx/README.md`](vfx/README.md) to install them, change them, and restore earlier versions.
+[`vfx/`](vfx) has hand-made move animations, each its own Stylus style: Surf, Hydro Pump and Ice Beam. Ice Beam needs the
+userscript 2.44.0 or later. See [`vfx/README.md`](vfx/README.md) to install them, change them, and restore earlier versions.
 
 ## Tuning
 
